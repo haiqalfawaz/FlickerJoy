@@ -6,8 +6,18 @@ const LoginPage = () => {
 
   return (
     <div className="flex flex-col justify-center items-center gap-2 text-black">
-      <input type="email" onChange={handleChange} placeholder="email" />
-      <input type="password" onChange={handleChange} placeholder="password" />
+      <input
+        type="email"
+        onChange={handleChange}
+        placeholder="email"
+        name="email"
+      />
+      <input
+        type="password"
+        onChange={handleChange}
+        placeholder="password"
+        name="password"
+      />
       <button onClick={handleLogin} className="p-2 border bg-white">
         login
       </button>
