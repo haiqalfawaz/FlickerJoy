@@ -10,7 +10,7 @@ const registerAPI = async (req, res) => {
     }
 
     const { data } = await axios.post(
-      `{process.env.NEXT_PUBLIC_API_URL}/register`,
+      `${process.env.NEXT_PUBLIC_API_URL}/register`,
       { name, username, email, password, passwordRepeat },
       {
         headers: {
