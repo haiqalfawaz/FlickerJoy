@@ -1,4 +1,5 @@
 import registerAPI from "@/services/register";
+import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 
@@ -24,8 +25,12 @@ const useRegister = () => {
 
   const handleRegistration = async () => {
     try {
-      const res = await registerAPI(formData);
-      console.log(res.data);
+      const res = await axios.post("api/authentication/register", formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(res.data.message);
       router.push("/login");
     } catch (error) {
       console.log("err", error);
