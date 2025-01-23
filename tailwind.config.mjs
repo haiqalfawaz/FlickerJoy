@@ -8,8 +8,11 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        "anastasia-1": "#FFFBE0",
+        "anastasia-2": "#FCDA05",
+        "anastasia-3": "#393E46",
+        "anastasia-4": "#222831",
+        "anastasia-5": "#D9D9D9",
       },
     },
   },
