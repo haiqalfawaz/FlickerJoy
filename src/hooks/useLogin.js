@@ -26,7 +26,7 @@ const useLogin = () => {
       });
       console.log(res.data.message);
       setCookie("token", res.data.token);
-      router.push("/");
+      router.push("/home");
     } catch (error) {
       console.log("Login Failed", error.message);
     }
