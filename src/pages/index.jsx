@@ -12,9 +12,6 @@ const LandingPage = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <h1>test</h1>
-      <button onClick={handleLogout} className="p-2 border bg-white text-black">
-        logout
-      </button>
     </div>
   );
 };
