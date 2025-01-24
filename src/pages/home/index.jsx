@@ -4,8 +4,36 @@ import Storybar from "@/components/Storybar";
 import Image from "next/image";
 import React from "react";
 import MiniProfile from "@/components/Miniprofile";
+import axios from "axios";
 
-const HomePage = () => {
+export async function getServerSideProps(context) {
+  try {
+    const token = context.req.cookies.token || "";
+    const apiURL = process.env.NEXT_PUBLIC_API_URL;
+
+    const UserRes = await axios.get(`${apiURL}/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        apiKey: process.env.NEXT_PUBLIC_API_KEY ?? "",
+      },
+    });
+    console.log(UserRes.data);
+    return {
+      props: {
+        user: UserRes.data.data,
+      },
+    };
+  } catch (error) {
+    console.error("API Error", error);
+    return {
+      props: {
+        user: null,
+      },
+    };
+  }
+}
+
+const HomePage = ({ user }) => {
   return (
     <div className="bg-anastasia-1 h-screen p-5 flex flex-col justify-center items-center gap-5">
       <div className="flex justify-center items-start gap-20 w-full">
@@ -15,7 +43,7 @@ const HomePage = () => {
       <div className="w-full flex justify-start items-start gap-5">
         <Storybar />
         <Postbar />
-        <MiniProfile />
+        <MiniProfile user={user} />
       </div>
     </div>
   );
