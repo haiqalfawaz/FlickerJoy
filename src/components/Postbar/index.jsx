@@ -40,7 +40,7 @@ const Postbar = ({ posts }) => {
       {currentPosts.map((post) => (
         <div
           key={post.id}
-          className="flex justify-center items-center h-full gap-7"
+          className="flex justify-center items-start h-full gap-7"
         >
           <div className="flex flex-col justify-center items-center gap-10">
             <Image
@@ -61,7 +61,8 @@ const Postbar = ({ posts }) => {
           </div>
           <div className="flex flex-col justify-center items-center gap-4">
             <div className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-2xl text-black w-full text-center">
-              <p>{post.createdAt}</p> {/* created at */}
+              <p>{new Date(post.createdAt).toLocaleDateString("id-ID")}</p>{" "}
+              {/* created at */}
             </div>
             <div className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-2xl text-black flex justify-center items-center gap-2 w-full">
               <Image
