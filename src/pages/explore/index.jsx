@@ -43,10 +43,9 @@ const ExplorePage = ({ explorePosts }) => {
 
   const handleScroll = () => {
     if (containerRef.current) {
-      const bottom =
-        containerRef.current.scrollHeight ===
-        containerRef.current.scrollTop + containerRef.current.clientHeight;
-      if (bottom && hasMore) {
+      const { scrollHeight, scrollTop, clientHeight } = containerRef.current;
+
+      if (scrollHeight - scrollTop <= clientHeight + 50 && hasMore) {
         setPage((prevPage) => prevPage + 1);
       }
     }
@@ -68,6 +67,7 @@ const ExplorePage = ({ explorePosts }) => {
             },
           }
         );
+
         const newPosts = res.data.data.posts;
 
         setCurrentExplorePosts((prev) => [...prev, ...newPosts]);
@@ -102,11 +102,11 @@ const ExplorePage = ({ explorePosts }) => {
               className="border border-black shadow-lg rounded-lg w-64 h-64 flex justify-center items-center"
             >
               <Image
-                src={explorePost.imageUrl}
-                alt={explorePost.caption}
+                src={explorePost.imageUrl || "/user.png"}
+                alt={explorePost.caption || "User Post"}
                 width={320}
                 height={320}
-                className="object-cover"
+                className="object-cover text-black "
               />
             </div>
           ))}
