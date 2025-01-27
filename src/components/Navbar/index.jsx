@@ -7,7 +7,7 @@ const Navbar = () => {
       <div className="px-10 py-5 bg-anastasia-2 flex justify-center items-center rounded-lg gap-52">
         <Link href="/home">Home</Link>
         <p>Post</p>
-        <p>Explore</p>
+        <Link href="/explore">Explore</Link>
         <Link href="/profile">Profile</Link>
       </div>
     </div>
