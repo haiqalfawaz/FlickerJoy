@@ -40,11 +40,11 @@ const Postbar = ({ posts }) => {
       {currentPosts.map((post) => (
         <div
           key={post.id}
-          className="flex justify-center items-start h-full gap-7"
+          className="flex justify-center items-start h-full gap-7 mb-2"
         >
           <div className="flex flex-col justify-center items-center gap-10">
             <Image
-              src={"/user.png"}
+              src={post.imageUrl || "/user.png"}
               alt="Post"
               width={400}
               height={400}

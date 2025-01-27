@@ -12,7 +12,13 @@ const MegaProfile = ({ user }) => {
     <div className="w-full h-full">
       <div className="flex flex-col justify-start items-center gap-3 h-full">
         <div className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black w-fit p-3">
-          <Image src="/user.png" alt="post" width={300} height={300} />
+          <Image
+            src={user.profilePictureUrl || "/user.png"}
+            alt="post"
+            width={300}
+            height={300}
+            className="rounded-xl"
+          />
         </div>
         <div className="flex justify-center items-center gap-3 w-full">
           <div className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black w-1/2 p-2 flex justify-center items-center gap-3 flex-col h-32">
@@ -50,7 +56,7 @@ const MegaProfile = ({ user }) => {
             <h3 className="text-xl font-semibold text-black">Logout</h3>
           </button>
         </div>
-        <div className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black w-full flex justify-center items-center h-full">
+        <div className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black w-full flex justify-center items-center h-24">
           <p className="textlg font-semibold text-black">{user.bio}</p>
         </div>
       </div>

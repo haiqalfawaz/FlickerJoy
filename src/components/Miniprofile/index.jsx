@@ -8,10 +8,11 @@ const MiniProfile = ({ user }) => {
       </h3>
       <div className="flex flex-col justify-center items-center">
         <Image
-          src={user.ProfilePictureUrl || "/user.png"}
+          src={user.profilePictureUrl || "/user.png"}
           alt="user"
           width={100}
           height={100}
+          className="rounded-full"
         />
         <p className="text-black text-2xl">@{user.username || "username"}</p>
       </div>
