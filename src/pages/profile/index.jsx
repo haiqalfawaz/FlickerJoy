@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import MegaProfile from "@/components/Megaprofile";
 import axios from "axios";
+import PostsUser from "@/components/PostsUser";
 
 export async function getServerSideProps(context) {
   try {
@@ -17,9 +18,22 @@ export async function getServerSideProps(context) {
       },
     });
 
+    const UserId = UserRes.data.data.id;
+
+    const PostsUserRes = await axios.get(
+      `${apiURL}/users-post/${UserId}?size=10&page=1`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          apiKey: apiKEY ?? "",
+        },
+      }
+    );
+
     return {
       props: {
         user: UserRes.data.data,
+        posts: PostsUserRes.data.data.posts,
       },
     };
   } catch (error) {
@@ -32,7 +46,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-const ProfilePage = ({ user }) => {
+const ProfilePage = ({ user, posts }) => {
   return (
     <div className="bg-anastasia-1 h-screen p-5 flex flex-col justify-center items-center gap-5">
       <div className="flex justify-center items-start gap-20 w-full">
@@ -41,15 +55,7 @@ const ProfilePage = ({ user }) => {
       </div>
       <div className="w-full flex justify-start items-start gap-5">
         <MegaProfile user={user} />
-        <div className="w-full rounded-2xl border-2 border-dashed p-2 grid grid-cols-3 grid-rows-3 gap-2 border-black place-items-center">
-          <Image
-            src="/user.png"
-            alt="post"
-            width={200}
-            height={200}
-            className="border border-black"
-          />
-        </div>
+        <PostsUser posts={posts} />
       </div>
     </div>
   );
