@@ -12,6 +12,8 @@ const nextConfig = {
       "www.blibli.com",
       "static.republika.co.id",
       "www.google.com",
+      "www.nestleprofessional.co.id",
+      "encrypted-tbn0.gstatic.com",
     ],
   },
 };
