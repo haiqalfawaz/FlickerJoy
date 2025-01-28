@@ -11,6 +11,7 @@ export async function getServerSideProps(context) {
     const token = context.req.cookies.token || "";
     const apiURL = process.env.NEXT_PUBLIC_API_URL;
     const apiKEY = process.env.NEXT_PUBLIC_API_KEY;
+    const { page = 1, size = 10 } = context.query;
 
     const UserRes = await axios.get(`${apiURL}/user`, {
       headers: {
@@ -19,17 +20,26 @@ export async function getServerSideProps(context) {
       },
     });
 
-    const PostRes = await axios.get(`${apiURL}/following-post?size=10&page=1`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        apiKey: apiKEY ?? "",
-      },
-    });
+    const PostRes = await axios.get(
+      `${apiURL}/following-post?size=${size}&page=${page}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          apiKey: apiKEY ?? "",
+        },
+      }
+    );
+
+    const { posts, totalItems, totalPages, currentPage } = PostRes.data.data;
 
     return {
       props: {
         user: UserRes.data.data,
-        posts: PostRes.data.data.posts,
+        posts,
+        totalItems,
+        totalPages,
+        currentPage: parseInt(currentPage, 10),
+        pageSize: parseInt(size, 10),
       },
     };
   } catch (error) {
@@ -38,12 +48,23 @@ export async function getServerSideProps(context) {
       props: {
         user: null,
         posts: [],
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: 1,
+        pageSize: 10,
       },
     };
   }
 }
 
-const HomePage = ({ user, posts }) => {
+const HomePage = ({
+  user,
+  posts,
+  totalItems,
+  totalPages,
+  currentPage,
+  pageSize,
+}) => {
   return (
     <div className="bg-anastasia-1 h-screen p-5 flex flex-col justify-center items-center gap-5">
       <div className="flex justify-center items-start gap-20 w-full">
@@ -52,7 +73,13 @@ const HomePage = ({ user, posts }) => {
       </div>
       <div className="w-full flex justify-start items-start gap-5">
         <Storybar />
-        <Postbar posts={posts} />
+        <Postbar
+          posts={posts}
+          totalItems={totalItems}
+          totalPages={totalPages}
+          currentPage={currentPage}
+          pageSize={pageSize}
+        />
         <MiniProfile user={user} />
       </div>
     </div>
