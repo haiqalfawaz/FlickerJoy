@@ -39,50 +39,39 @@ const ExplorePage = ({ explorePosts }) => {
   const [currentExplorePosts, setCurrentExplorePosts] = useState(explorePosts);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const containerRef = useRef(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleScroll = () => {
-    if (containerRef.current) {
-      const { scrollHeight, scrollTop, clientHeight } = containerRef.current;
+  const loadMorePosts = async () => {
+    setLoading(true);
+    try {
+      const token = getCookies().token;
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const apiKEY = process.env.NEXT_PUBLIC_API_KEY;
 
-      if (scrollHeight - scrollTop <= clientHeight + 50 && hasMore) {
-        setPage((prevPage) => prevPage + 1);
+      const res = await axios.get(
+        `${apiUrl}/explore-post?size=10&page=${page}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            apiKey: apiKEY ?? "",
+          },
+        }
+      );
+
+      const newPosts = res.data.data.posts;
+
+      setCurrentExplorePosts((prev) => [...prev, ...newPosts]);
+
+      if (newPosts.length < 10) {
+        setHasMore(false);
       }
+      setPage((prevPage) => prevPage + 1);
+    } catch (error) {
+      console.error("Error loading more Posts:", error);
+    } finally {
+      setLoading(false);
     }
   };
-
-  useEffect(() => {
-    const loadMorePosts = async () => {
-      try {
-        const token = getCookies().token;
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-        const apiKEY = process.env.NEXT_PUBLIC_API_KEY;
-
-        const res = await axios.get(
-          `${apiUrl}/explore-post?size=10&page=${page}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              apiKey: apiKEY ?? "",
-            },
-          }
-        );
-
-        const newPosts = res.data.data.posts;
-
-        setCurrentExplorePosts((prev) => [...prev, ...newPosts]);
-
-        if (newPosts.length < 10) {
-          setHasMore(false);
-        }
-      } catch (error) {
-        console.error("Error loading more Posts:", error);
-      }
-    };
-    if (page > 1) {
-      loadMorePosts();
-    }
-  }, [page]);
 
   return (
     <div className="bg-anastasia-1 h-screen p-5 flex flex-col justify-center items-center gap-5">
@@ -90,11 +79,7 @@ const ExplorePage = ({ explorePosts }) => {
         <Image src="/Logo-crop.png" alt="Logo" width={150} height={150} />
         <Navbar />
       </div>
-      <div
-        className="border-2 border-dashed border-black w-full h-full rounded-lg p-4 overflow-auto"
-        ref={containerRef}
-        onScroll={handleScroll}
-      >
+      <div className="border-2 border-dashed border-black w-full h-full rounded-lg p-4 overflow-auto">
         <div className="flex flex-wrap justify-center items-center gap-2">
           {currentExplorePosts.map((explorePost) => (
             <div
@@ -111,6 +96,17 @@ const ExplorePage = ({ explorePosts }) => {
             </div>
           ))}
         </div>
+        {hasMore && (
+          <div className="flex justify-center items-center p-2 border border-black rounded-lg mt-4 ">
+            <button
+              className="text-xl text-black font-semibold"
+              onClick={loadMorePosts}
+              disabled={loading}
+            >
+              {loading ? "Loading..." : "Load More Posts"}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
