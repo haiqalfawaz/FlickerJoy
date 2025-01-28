@@ -1,42 +1,55 @@
 import Image from "next/image";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
+import axios from "axios";
+import { getCookie } from "cookies-next";
 
 //Import Icons
 import { GoHeart } from "react-icons/go";
 import { FaRegCommentAlt } from "react-icons/fa";
 
-const Postbar = ({ posts }) => {
+const Postbar = ({ posts, totalItems, totalPages, currentPage, pageSize }) => {
   const [currentPosts, setCurrentPosts] = useState(posts);
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true); // untuk menandakan apa bener masih ada post yang lainnya
-  const containerRef = useRef(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const handleScroll = () => {
-    if (containerRef.current) {
-      const bottom =
-        containerRef.current.scrollHeight ===
-        containerRef.current.scrollTop + containerRef.current.clientHeight;
-      if (bottom && hasMore) {
-        setPage((prevPage) => prevPage + 1);
+  const loadMorePosts = async () => {
+    setLoading(true);
+
+    try {
+      const token = getCookie("token");
+      const apiURL = process.env.NEXT_PUBLIC_API_URL;
+      const apiKEY = process.env.NEXT_PUBLIC_API_KEY;
+
+      const res = await axios.get(
+        `${apiURL}/following-post?size=${pageSize}&page=${page + 1}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            apiKey: apiKEY ?? "",
+          },
+        }
+      );
+
+      const newPosts = res.data.data.posts;
+
+      if (newPosts && newPosts.length > 0) {
+        setCurrentPosts((prevPosts) => [...prevPosts, ...newPosts]);
+        setPage((prevpPage) => prevpPage + 1);
       }
+
+      if (newPosts < pageSize) {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error("Error Loading Posts:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    const loadMorePosts = () => {
-      const nextPosts = posts.slice(page * 10, (page + 1) * 10);
-      setCurrentPosts((prev) => [...prev, ...nextPosts]);
-      if (nextPosts.length === 0) setHasMore(false);
-    };
-    loadMorePosts();
-  }, [page, posts]);
-
   return (
-    <div
-      ref={containerRef}
-      onScroll={handleScroll}
-      className="h-[80vh] overflow-auto border-4 rounded-2xl border-dashed border-black px-2 py-2 w-[800px]"
-    >
+    <div className="h-[80vh] overflow-auto border-4 rounded-2xl border-dashed border-black px-2 py-2 w-[800px]">
       {currentPosts.map((post) => (
         <div
           key={post.id}
@@ -80,7 +93,17 @@ const Postbar = ({ posts }) => {
           </div>
         </div>
       ))}
-      {!hasMore && (
+      {hasMore && !loading ? (
+        <div className="flex justify-center items-center p-2 border border-black rounded-lg mt-4">
+          <button
+            className="text-xl text-black font-semibold"
+            onClick={loadMorePosts}
+            disabled={loading}
+          >
+            {loading ? "Loading..." : "Load More Posts"}
+          </button>
+        </div>
+      ) : (
         <p className="text-center text-black text-2xl mt-3">
           No More Post to Load!
         </p>
