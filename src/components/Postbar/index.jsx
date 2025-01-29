@@ -50,50 +50,57 @@ const Postbar = ({ posts, totalItems, totalPages, currentPage, pageSize }) => {
 
   return (
     <div className="h-[80vh] overflow-auto border-4 rounded-2xl border-dashed border-black px-2 py-2 w-[800px]">
-      {currentPosts.map((post) => (
-        <div
-          key={post.id}
-          className="flex justify-center items-start h-full gap-7 mb-2"
-        >
-          <div className="flex flex-col justify-center items-center gap-10">
-            <Image
-              src={post.imageUrl || "/user.png"}
-              alt="Post"
-              width={400}
-              height={400}
-              className="border-2 rounded-xl border-black"
-            />
-            <div className="flex justify-center items-center gap-10">
-              <button className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-2xl text-black">
-                <GoHeart /> {/* button like */}
-              </button>
-              <button className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-2xl text-black">
-                <FaRegCommentAlt />
-              </button>
-            </div>
-          </div>
-          <div className="flex flex-col justify-center items-center gap-4">
-            <div className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-2xl text-black w-full text-center">
-              <p>{new Date(post.createdAt).toLocaleDateString("id-ID")}</p>{" "}
-              {/* created at */}
-            </div>
-            <div className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-2xl text-black flex justify-center items-center gap-2 w-full">
+      {currentPosts.length === 0 ? (
+        <p className="text-center text-black text-2xl mt-3">
+          Let follow someone!
+        </p>
+      ) : (
+        currentPosts.map((post) => (
+          <div
+            key={post.id}
+            className="flex justify-center items-start h-full gap-7 mb-2"
+          >
+            <div className="flex flex-col justify-center items-center gap-10">
               <Image
-                src={"/user.png"}
-                alt="user"
-                width={50}
-                height={50}
+                src={post.imageUrl || "/user.png"}
+                alt="Post"
+                width={400}
+                height={400}
                 className="border-2 rounded-xl border-black"
               />
-              <p>@{post.user.username}</p> {/* username */}
+              <div className="flex justify-center items-center gap-10">
+                <button className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-2xl text-black">
+                  <GoHeart /> {/* button like */}
+                </button>
+                <button className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-2xl text-black">
+                  <FaRegCommentAlt />
+                </button>
+              </div>
             </div>
-            <div className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-xl text-black h-96 w-72 flex justify-center items-center text-center">
-              {post.caption} {/* caption */}
+            <div className="flex flex-col justify-center items-center gap-4">
+              <div className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-2xl text-black w-full text-center">
+                <p>{new Date(post.createdAt).toLocaleDateString("id-ID")}</p>{" "}
+                {/* created at */}
+              </div>
+              <div className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-2xl text-black flex justify-center items-center gap-2 w-full">
+                <Image
+                  src={"/user.png"}
+                  alt="user"
+                  width={50}
+                  height={50}
+                  className="border-2 rounded-xl border-black"
+                />
+                <p>@{post.user.username}</p> {/* username */}
+              </div>
+              <div className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-xl text-black h-96 w-72 flex justify-center items-center text-center">
+                {post.caption} {/* caption */}
+              </div>
             </div>
           </div>
-        </div>
-      ))}
-      {hasMore && !loading ? (
+        ))
+      )}
+
+      {hasMore && !loading && currentPosts.length > 0 ? (
         <div className="flex justify-center items-center p-2 border border-black rounded-lg mt-4">
           <button
             className="text-xl text-black font-semibold"
