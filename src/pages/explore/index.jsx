@@ -2,7 +2,8 @@ import Navbar from "@/components/Navbar";
 import axios from "axios";
 import { getCookies } from "cookies-next";
 import Image from "next/image";
-import React, { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
+import React, { useState } from "react";
 
 export async function getServerSideProps(context) {
   try {
@@ -40,6 +41,19 @@ const ExplorePage = ({ explorePosts }) => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [imageErrors, setImageErrors] = useState({});
+  const router = useRouter();
+
+  const handleImageError = (postId) => {
+    setImageErrors((prevState) => ({
+      ...prevState,
+      [postId]: true,
+    }));
+  };
+
+  const handleClickPost = (postId) => {
+    router.push(`post/${postId}`);
+  };
 
   const loadMorePosts = async () => {
     setLoading(true);
@@ -84,14 +98,20 @@ const ExplorePage = ({ explorePosts }) => {
           {currentExplorePosts.map((explorePost) => (
             <div
               key={explorePost.id}
-              className="border border-black shadow-lg rounded-lg w-64 h-64 flex justify-center items-center"
+              className="border border-black shadow-lg rounded-lg w-64 h-64 flex justify-center items-center cursor-pointer"
+              onClick={() => handleClickPost(explorePost.id)}
             >
               <Image
-                src={explorePost.imageUrl || "/user.png"}
+                src={
+                  imageErrors[explorePost.id] || !explorePost.imageUrl
+                    ? "/user.png"
+                    : explorePost.imageUrl
+                }
                 alt={explorePost.caption || "User Post"}
                 width={320}
                 height={320}
                 className="object-cover text-black "
+                onError={() => handleImageError(explorePost.id)}
               />
             </div>
           ))}
