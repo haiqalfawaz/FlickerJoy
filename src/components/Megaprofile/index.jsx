@@ -36,16 +36,16 @@ const MegaProfile = ({ user }) => {
           </div>
         </div>
         <div className="flex justify-center items-center gap-2">
-          <div className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black p-2">
+          <button className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black p-2">
             <h3 className="text-xl font-semibold text-black">
               {user.totalFollowing} Following
             </h3>
-          </div>
-          <div className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black p-2">
+          </button>
+          <button className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black p-2">
             <h3 className="text-xl font-semibold text-black">
               {user.totalFollowers} Followers
             </h3>
-          </div>
+          </button>
           <button className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black py-2 px-3">
             <FaRegEdit className="text-xl font-semibold text-black" />
           </button>
