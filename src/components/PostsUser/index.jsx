@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getCookie } from "cookies-next";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 
 const PostsUser = ({
@@ -14,6 +15,7 @@ const PostsUser = ({
   const [posts, setPosts] = useState(initialPosts);
   const [page, setPage] = useState(currentPage);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const loadMorePosts = async () => {
     setLoading(true);
@@ -46,16 +48,21 @@ const PostsUser = ({
     }
   };
 
+  const handleClickPost = (postId) => {
+    router.push(`post/${postId}`);
+  };
+
   return (
     <div className="w-full rounded-2xl border-2 border-dashed border-black p-3 h-[630px] overflow-y-auto">
       <div className="flex flex-wrap justify-center items-center gap-5">
         {posts.map((post) => (
           <div
             key={post.id}
-            className="border border-black  shadow-lg rounded-lg w-52 h-52 flex justify-center items-center"
+            className="border border-black  shadow-lg rounded-lg w-52 h-52 flex justify-center items-center cursor-pointer"
+            onClick={() => handleClickPost(post.id)}
           >
             <Image
-              src={post.imageUrl ? `/images/${post.imageUrl}` : "/user.png"}
+              src={post.imageUrl || "/user.png"}
               alt="User Posts"
               width={200}
               height={200}
