@@ -24,7 +24,7 @@ const MegaProfile = ({ user }) => {
           <div className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black w-1/2 p-2 flex justify-center items-center gap-3 flex-col h-32">
             <h3 className="text-xl font-semibold text-black">{user.name}</h3>
             <h3 className="text-xl font-semibold text-black">
-              {user.Username}
+              @{user.username}
             </h3>
           </div>
           <div className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black w-1/2 p-2 flex flex-col justify-center items-center gap-3 h-32">

@@ -66,6 +66,7 @@ const PostsUser = ({
               alt="User Posts"
               width={200}
               height={200}
+              className="object-cover"
             />
           </div>
         ))}
