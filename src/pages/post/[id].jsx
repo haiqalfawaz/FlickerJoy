@@ -9,6 +9,7 @@ import { GoHeart } from "react-icons/go";
 import { FaRegCommentAlt } from "react-icons/fa";
 import { GoHeartFill } from "react-icons/go";
 import { IoSend } from "react-icons/io5";
+import useLike from "@/hooks/useLike";
 
 export async function getServerSideProps(context) {
   const { id } = context.params;
@@ -52,10 +53,22 @@ const PostDetailsPage = ({ postDetails }) => {
     setComments,
   } = useComment();
 
+  const {
+    isLiked,
+    isLoading: isloadingLike,
+    handleLike,
+    error: errorLike,
+    totalLikes,
+    setIsLiked,
+    setTotalLikes,
+  } = useLike();
+
   useEffect(() => {
     if (postDetails.comments) {
       setComments(postDetails.comments);
     }
+    setIsLiked(postDetails.isLike);
+    setTotalLikes(postDetails.totalLikes);
   }, [postDetails, setComments]);
 
   return (
@@ -76,8 +89,12 @@ const PostDetailsPage = ({ postDetails }) => {
             />
             <div className="flex justify-center items-center gap-5">
               <div className="flex justify-center items-center gap-2 py-1 px-2 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black]">
-                <button className="text-black font-bold text-5xl">
-                  {postDetails.isLike === true ? <GoHeartFill /> : <GoHeart />}
+                <button
+                  className="text-black font-bold text-5xl"
+                  onClick={() => handleLike(postDetails.id)}
+                  disabled={isloadingLike}
+                >
+                  {isLiked ? <GoHeartFill /> : <GoHeart />}
                 </button>
                 <p className="text-xl text-black">{postDetails.totalLikes}</p>
               </div>
