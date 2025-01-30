@@ -1,0 +1,34 @@
+import axios from "axios";
+import React from "react";
+
+const likeAPI = async (req, res) => {
+  const token = req.cookies.token || "";
+  if (req.method === "POST") {
+    try {
+      const { postId } = req.body;
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const apiKEY = process.env.NEXT_PUBLIC_API_KEY;
+
+      const response = await axios.post(
+        `${apiUrl}/like`,
+        {
+          postId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            apiKey: apiKEY ?? "",
+          },
+        }
+      );
+      res.status(200).json(response.data);
+    } catch (error) {
+      console.error("Error like post:", error);
+      res.status(500).json({ error: "failed to like post" });
+    }
+  } else {
+    res.status(405).json({ error: "Method not allowed" });
+  }
+};
+
+export default likeAPI;
