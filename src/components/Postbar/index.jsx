@@ -8,7 +8,7 @@ import { GoHeart } from "react-icons/go";
 import { FaRegCommentAlt } from "react-icons/fa";
 
 const Postbar = ({ posts, totalItems, totalPages, currentPage, pageSize }) => {
-  const [currentPosts, setCurrentPosts] = useState(posts);
+  const [currentPosts, setCurrentPosts] = useState(posts || []);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
