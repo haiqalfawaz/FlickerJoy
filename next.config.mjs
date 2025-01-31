@@ -1,17 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   images: {
     remotePatterns: [
       {
-        protocol: "https",
+        protocol: "http",
         hostname: "**",
       },
       {
         protocol: "https",
-        hostname: "photo-sharing-api-bootcamp.do.dibimbing.id",
-        port: "",
-        pathname: "/**",
+        hostname: "**",
       },
     ],
   },
