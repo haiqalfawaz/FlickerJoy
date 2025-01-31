@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import useComment from "@/hooks/useComment";
 import useLike from "@/hooks/useLike";
+import useDeletePost from "@/hooks/useDeletePost";
 
 // Import Icons
 import { GoHeart } from "react-icons/go";
@@ -72,6 +73,8 @@ const PostDetailsPage = ({ postDetails, userId }) => {
     setTotalLikes,
   } = useLike();
 
+  const { deletePost } = useDeletePost();
+
   const [isUser, SetIsUser] = useState(false);
 
   useEffect(() => {
@@ -85,6 +88,12 @@ const PostDetailsPage = ({ postDetails, userId }) => {
       SetIsUser(true);
     }
   }, [postDetails, userId, setComments, setIsLiked, setTotalLikes]);
+
+  const handleDelete = () => {
+    if (postDetails && postDetails.id) {
+      deletePost(postDetails.id);
+    }
+  };
 
   return (
     <div className="bg-anastasia-1 h-screen p-5 flex flex-col justify-center items-center gap-5">
@@ -103,7 +112,7 @@ const PostDetailsPage = ({ postDetails, userId }) => {
               className="border-2 rounded-xl border-black object-cover h-[450px] w-[700px]"
             />
             <div className="flex justify-center items-center gap-5">
-              <div className="flex justify-center items-center gap-2 py-1 px-2 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black]">
+              <div className="flex justify-center items-center gap-2 py-1 px-2 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black] active:[box-shadow:0px_0px_black]">
                 <button
                   className="text-black font-bold text-5xl"
                   onClick={() => handleLike(postDetails.id)}
@@ -113,14 +122,17 @@ const PostDetailsPage = ({ postDetails, userId }) => {
                 </button>
                 <p className="text-xl text-black">{postDetails.totalLikes}</p>
               </div>
-              <div className="flex justify-center items-center gap-4 p-1 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black]">
+              <div className="flex justify-center items-center gap-4 p-1 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black] active:[box-shadow:0px_0px_black]">
                 <button className="text-black text-5xl">
                   <FaRegCommentAlt />
                 </button>
               </div>
               {isUser && (
-                <div className="flex justify-center items-center gap-4 p-1 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black]">
-                  <button className="text-black text-5xl">
+                <div className="flex justify-center items-center gap-4 p-1 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black] active:[box-shadow:0px_0px_black]">
+                  <button
+                    className="text-black text-5xl"
+                    onClick={handleDelete}
+                  >
                     <MdDeleteForever />
                   </button>
                 </div>
