@@ -12,6 +12,7 @@ import { FaRegCommentAlt } from "react-icons/fa";
 import { GoHeartFill } from "react-icons/go";
 import { IoSend } from "react-icons/io5";
 import { MdDeleteForever } from "react-icons/md";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export async function getServerSideProps(context) {
   const { id } = context.params;
@@ -75,7 +76,7 @@ const PostDetailsPage = ({ postDetails, userId }) => {
 
   const { deletePost } = useDeletePost();
 
-  const [isUser, SetIsUser] = useState(false);
+  const [isUserPost, setIsUserPost] = useState(false);
 
   useEffect(() => {
     if (postDetails.comments) {
@@ -85,7 +86,7 @@ const PostDetailsPage = ({ postDetails, userId }) => {
     setTotalLikes(postDetails.totalLikes);
 
     if (userId === postDetails.user.id) {
-      SetIsUser(true);
+      setIsUserPost(true);
     }
   }, [postDetails, userId, setComments, setIsLiked, setTotalLikes]);
 
@@ -127,7 +128,7 @@ const PostDetailsPage = ({ postDetails, userId }) => {
                   <FaRegCommentAlt />
                 </button>
               </div>
-              {isUser && (
+              {isUserPost && (
                 <div className="flex justify-center items-center gap-4 p-1 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black] active:[box-shadow:0px_0px_black]">
                   <button
                     className="text-black text-5xl"
@@ -202,7 +203,11 @@ const PostDetailsPage = ({ postDetails, userId }) => {
                 onClick={() => sendComment(postDetails.id)}
                 disabled={isLoading}
               >
-                <IoSend />
+                {isLoading ? (
+                  <AiOutlineLoading3Quarters className="animate-spin" />
+                ) : (
+                  <IoSend />
+                )}
               </button>
             </div>
           </div>
