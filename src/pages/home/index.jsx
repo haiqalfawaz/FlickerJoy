@@ -30,15 +30,43 @@ export async function getServerSideProps(context) {
       }
     );
 
-    const { posts, totalItems, totalPages, currentPage } = PostRes.data.data;
+    const StoryRes = await axios.get(
+      `${apiURL}/following-story?size=${size}&page=${page}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          apiKey: apiKEY ?? "",
+        },
+      }
+    );
+
+    const user = UserRes.data.data;
+
+    const {
+      posts,
+      totalItems: totalPosts,
+      totalPages: totalPostPages,
+      currentPage: currentPostPage,
+    } = PostRes.data.data;
+
+    const {
+      stories,
+      totalItems: totalStories,
+      totalPages: totalStoryPages,
+      currentPage: currentStoryPage,
+    } = StoryRes.data.data;
 
     return {
       props: {
-        user: UserRes.data.data,
+        user: user || null,
         posts,
-        totalItems,
-        totalPages,
-        currentPage: parseInt(currentPage, 10),
+        totalPosts,
+        totalPostPages,
+        currentPostPage: parseInt(currentPostPage, 10),
+        stories,
+        totalStories,
+        totalStoryPages,
+        currentStoryPage: parseInt(currentStoryPage, 10),
         pageSize: parseInt(size, 10),
       },
     };
@@ -48,9 +76,13 @@ export async function getServerSideProps(context) {
       props: {
         user: null,
         posts: [],
-        totalItems: 0,
-        totalPages: 0,
-        currentPage: 1,
+        totalPosts: 0,
+        totalPostPages: 0,
+        currentPostPage: 1,
+        stories: [],
+        totalStories: 0,
+        totalStoryPages: 0,
+        currentStoryPage: 1,
         pageSize: 10,
       },
     };
@@ -60,10 +92,14 @@ export async function getServerSideProps(context) {
 const HomePage = ({
   user,
   posts,
-  totalItems,
-  totalPages,
-  currentPage,
+  totalPosts,
+  totalPostPages,
+  currentPostPage,
   pageSize,
+  stories,
+  totalStories,
+  totalStoryPages,
+  currentStoryPage,
 }) => {
   return (
     <div className="bg-anastasia-1 h-screen p-5 flex flex-col justify-center items-center gap-5">
@@ -72,12 +108,17 @@ const HomePage = ({
         <Navbar />
       </div>
       <div className="w-full flex justify-start items-start gap-5">
-        <Storybar />
+        <Storybar
+          stories={stories}
+          totalItems={totalStories}
+          totalPages={totalStoryPages}
+          currentPage={currentStoryPage}
+        />
         <Postbar
           posts={posts}
-          totalItems={totalItems}
-          totalPages={totalPages}
-          currentPage={currentPage}
+          totalItems={totalPosts}
+          totalPages={totalPostPages}
+          currentPage={currentPostPage}
           pageSize={pageSize}
         />
         <MiniProfile user={user} />
