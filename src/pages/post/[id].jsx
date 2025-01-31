@@ -1,25 +1,33 @@
 import Navbar from "@/components/Navbar";
 import axios from "axios";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import useComment from "@/hooks/useComment";
+import useLike from "@/hooks/useLike";
 
 // Import Icons
 import { GoHeart } from "react-icons/go";
 import { FaRegCommentAlt } from "react-icons/fa";
 import { GoHeartFill } from "react-icons/go";
 import { IoSend } from "react-icons/io5";
-import useLike from "@/hooks/useLike";
+import { MdDeleteForever } from "react-icons/md";
 
 export async function getServerSideProps(context) {
   const { id } = context.params;
   const token = context.req.cookies.token || "";
 
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    const apiURL = process.env.NEXT_PUBLIC_API_URL;
     const apiKEY = process.env.NEXT_PUBLIC_API_KEY;
 
-    const res = await axios.get(`${apiUrl}/post/${id}`, {
+    const res = await axios.get(`${apiURL}/post/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        apiKey: apiKEY ?? "",
+      },
+    });
+
+    const UserRes = await axios.get(`${apiURL}/user`, {
       headers: {
         Authorization: `Bearer ${token}`,
         apiKey: apiKEY ?? "",
@@ -29,6 +37,7 @@ export async function getServerSideProps(context) {
     return {
       props: {
         postDetails: res.data.data,
+        userId: UserRes.data.data.id,
       },
     };
   } catch (error) {
@@ -41,7 +50,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-const PostDetailsPage = ({ postDetails }) => {
+const PostDetailsPage = ({ postDetails, userId }) => {
   const {
     comments,
     comment,
@@ -63,13 +72,19 @@ const PostDetailsPage = ({ postDetails }) => {
     setTotalLikes,
   } = useLike();
 
+  const [isUser, SetIsUser] = useState(false);
+
   useEffect(() => {
     if (postDetails.comments) {
       setComments(postDetails.comments);
     }
     setIsLiked(postDetails.isLike);
     setTotalLikes(postDetails.totalLikes);
-  }, [postDetails, setComments]);
+
+    if (userId === postDetails.user.id) {
+      SetIsUser(true);
+    }
+  }, [postDetails, userId, setComments, setIsLiked, setTotalLikes]);
 
   return (
     <div className="bg-anastasia-1 h-screen p-5 flex flex-col justify-center items-center gap-5">
@@ -103,6 +118,13 @@ const PostDetailsPage = ({ postDetails }) => {
                   <FaRegCommentAlt />
                 </button>
               </div>
+              {isUser && (
+                <div className="flex justify-center items-center gap-4 p-1 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black]">
+                  <button className="text-black text-5xl">
+                    <MdDeleteForever />
+                  </button>
+                </div>
+              )}
               <div className="flex justify-center items-center gap-4 p-1 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black] h-[59px]">
                 <h3 className="text-black text-2xl">
                   {new Date(postDetails.createdAt).toLocaleDateString("id-ID")}
@@ -110,13 +132,13 @@ const PostDetailsPage = ({ postDetails }) => {
               </div>
               <div className="flex justify-center items-center gap-4 p-1 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black]">
                 <Image
-                  src={postDetails.user.profilePictureUrl || "/user.png"}
+                  src={postDetails.user?.profilePictureUrl || "/user.png"}
                   width={50}
                   height={50}
                   className="border border-black rounded-full"
                 />
                 <h3 className="text-black font-semibold text-2xl">
-                  @{postDetails.user.username}
+                  @{postDetails.user?.username || "Username"}
                 </h3>
               </div>
             </div>
@@ -130,7 +152,7 @@ const PostDetailsPage = ({ postDetails }) => {
                 Comments
               </h1>
             </div>
-            <div className="border-2 border-anastasia-2 p-2 rounded-lg w-full h-full mb-3 flex flex-col items-center overflow-auto text-anastasia-2 gap-3">
+            <div className="border-2 border-anastasia-2 p-2 rounded-lg w-full h-[450px] mb-3 flex flex-col items-center overflow-y-auto text-anastasia-2 gap-3">
               {postDetails.comments && postDetails.comments.length > 0 ? (
                 postDetails.comments.map((comment) => (
                   <div
