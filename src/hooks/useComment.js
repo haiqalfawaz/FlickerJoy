@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getCookies } from "cookies-next";
 import { useState } from "react";
 
 const useComment = () => {
@@ -10,14 +11,21 @@ const useComment = () => {
   const sendComment = async (postId) => {
     if (!comment.trim()) return;
 
+    const token = getCookies().token || "";
+    const apiURL = process.env.NEXT_PUBLIC_API_URL;
+    const apiKEY = process.env.NEXT_PUBLIC_API_KEY;
+
     setIsLoading(true);
     try {
-      const response = await axios.post("/api/comment", {
-        postId,
-        comment,
-      });
+      await axios.post("/api/comment", { postId, comment });
 
-      setComments((prevComments) => [...prevComments, response.data.comment]);
+      const response = await axios.get(`${apiURL}/post/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          apikey: apiKEY ?? "",
+        },
+      });
+      setComments(response.data.data.comments);
       setComment("");
       setError(null);
     } catch (error) {
