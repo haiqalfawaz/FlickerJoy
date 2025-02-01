@@ -7,14 +7,13 @@ import PostsUser from "@/components/PostsUser";
 
 export async function getServerSideProps(context) {
   try {
-    const { id } = context.params;
     const token = context.req.cookies.token || "";
     const apiURL = process.env.NEXT_PUBLIC_API_URL;
     const apiKEY = process.env.NEXT_PUBLIC_API_KEY;
 
     const { page = 1, size = 10 } = context.query;
 
-    const UserRes = await axios.get(`${apiURL}/user/${id}`, {
+    const UserRes = await axios.get(`${apiURL}/user`, {
       headers: {
         Authorization: `Bearer ${token}`,
         apiKey: apiKEY ?? "",
