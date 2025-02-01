@@ -166,8 +166,8 @@ const PostDetailsPage = ({ postDetails, userId }) => {
               </h1>
             </div>
             <div className="border-2 border-anastasia-2 p-2 rounded-lg w-full h-[450px] mb-3 flex flex-col items-center overflow-y-auto text-anastasia-2 gap-3">
-              {postDetails.comments && postDetails.comments.length > 0 ? (
-                postDetails.comments.map((comment) => (
+              {comments && comments.length > 0 ? (
+                comments.map((comment) => (
                   <div
                     key={comment.id}
                     className="flex justify-start items-center w-full"
@@ -198,6 +198,7 @@ const PostDetailsPage = ({ postDetails, userId }) => {
                 className="bg-transparent focus:outline-none w-full text-center"
                 onChange={handleCommentChange}
                 name="comment"
+                value={comment}
               />
               <button
                 onClick={() => sendComment(postDetails.id)}
