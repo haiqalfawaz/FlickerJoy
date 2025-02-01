@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { getCookies } from "cookies-next";
 
 const useLike = () => {
   const [isLiked, setIsLiked] = useState(false);
@@ -10,14 +11,24 @@ const useLike = () => {
   const handleLike = async (postId) => {
     if (isLoading) return;
 
+    const token = getCookies().token || "";
+    const apiURL = process.env.NEXT_PUBLIC_API_URL;
+    const apiKEY = process.env.NEXT_PUBLIC_API_KEY;
+
     setIsLoading(true);
 
     try {
-      const response = await axios.post("/api/like", {
-        postId,
+      await axios.post("/api/like", { postId });
+
+      const response = await axios.get(`${apiURL}/post/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          apiKey: apiKEY ?? "",
+        },
       });
-      setIsLiked(response.data.isLike);
-      setTotalLikes(response.data.totalLikes);
+
+      setIsLiked(response.data.data.isLike);
+      setTotalLikes(response.data.data.totalLikes);
       setError(null);
     } catch (error) {
       setError("Failed to like post");
