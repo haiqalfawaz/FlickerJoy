@@ -1,6 +1,6 @@
 import useLogout from "@/hooks/useLogout";
 import Image from "next/image";
-import React, { use } from "react";
+import React from "react";
 
 //Import Icons
 import { FaRegEdit } from "react-icons/fa";
