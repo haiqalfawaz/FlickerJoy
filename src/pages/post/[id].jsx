@@ -5,6 +5,7 @@ import Image from "next/image";
 import useComment from "@/hooks/useComment";
 import useLike from "@/hooks/useLike";
 import useDeletePost from "@/hooks/useDeletePost";
+import useDeleteComment from "@/hooks/useDeleteComment";
 
 // Import Icons
 import { GoHeart } from "react-icons/go";
@@ -76,24 +77,36 @@ const PostDetailsPage = ({ postDetails, userId }) => {
 
   const { deletePost } = useDeletePost();
 
+  const { deleteComment, isLoadingDeleteComment } = useDeleteComment();
+
   const [isUserPost, setIsUserPost] = useState(false);
 
   useEffect(() => {
     if (postDetails.comments) {
       setComments(postDetails.comments);
     }
-    setIsLiked(postDetails.isLike);
-    setTotalLikes(postDetails.totalLikes);
+
+    if (postDetails.isLike !== undefined) {
+      setIsLiked(postDetails.isLike);
+    }
+
+    if (postDetails.totalLikes !== undefined) {
+      setTotalLikes(postDetails.totalLikes);
+    }
 
     if (userId === postDetails.user.id) {
       setIsUserPost(true);
     }
-  }, [postDetails, userId, setComments, setIsLiked, setTotalLikes]);
+  }, [postDetails, userId, setComments]);
 
   const handleDelete = () => {
     if (postDetails && postDetails.id) {
       deletePost(postDetails.id);
     }
+  };
+
+  const handleDeleteComment = (commentId) => {
+    deleteComment(commentId, comments, setComments);
   };
 
   return (
@@ -121,7 +134,7 @@ const PostDetailsPage = ({ postDetails, userId }) => {
                 >
                   {isLiked ? <GoHeartFill /> : <GoHeart />}
                 </button>
-                <p className="text-xl text-black">{postDetails.totalLikes}</p>
+                <p className="text-xl text-black">{totalLikes}</p>
               </div>
               <div className="flex justify-center items-center gap-4 p-1 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black] active:[box-shadow:0px_0px_black]">
                 <button className="text-black text-5xl">
@@ -183,6 +196,21 @@ const PostDetailsPage = ({ postDetails, userId }) => {
                       @{comment.user.username} :
                     </p>
                     <p className="text-base">{comment.comment}</p>
+                    {comment.user.id === userId && (
+                      <div className="flex justify-center items-center gap-2 py-1 px-2 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black] active:[box-shadow:0px_0px_black]">
+                        <button
+                          className="text-lg text-black"
+                          onClick={() => handleDeleteComment(comment.id)}
+                          disabled={isLoadingDeleteComment}
+                        >
+                          {isLoadingDeleteComment ? (
+                            <AiOutlineLoading3Quarters className="animate-spin" />
+                          ) : (
+                            <MdDeleteForever />
+                          )}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))
               ) : (
