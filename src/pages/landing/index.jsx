@@ -21,13 +21,13 @@ const LandingPage = () => {
           <div className="w-96 h-96 bg-slate-50 flex justify-center items-start py-4 px-4 -rotate-12 absolute z-20 -bottom-36 left-0 shadow-xl hover:scale-105 transition-all duration-200">
             <div className="w-full h-64 shadow-inner bg-slate-200"></div>
           </div>
-          <div className="w-[1000px] bg-anastasia-1 h-fit px-2 py-4  opacity-85 rounded-lg flex flex-col justify-center items-center gap-5">
+          <div className="w-[1000px] bg-anastasia-1 h-[450px] px-2 py-4  opacity-85 rounded-lg flex flex-col justify-center items-center gap-5">
             <Image src="/Logo-crop.png" alt="logo" width={200} height={200} />
             <h1 className="text-3xl text-black">
               A Silent Story, Told in Every Frame.
             </h1>
             <div className="flex justify-center items-center">
-              <div className="place-items-center p-2  border-r-2 border-black space-y-3">
+              <div className="flex flex-col justify-center items-center gap-3 p-2 border-r-2 border-black">
                 <h4 className="text-xl font-semibold text-black">
                   Don't have an account yet?
                 </h4>
@@ -36,12 +36,12 @@ const LandingPage = () => {
                   ones!
                 </p>
                 <Link href="/register">
-                  <button className="p-2 border border-anastasia-2 rounded-lg text-anastasia-2 bg-anastasia-4 shadow-[5px_5px_0px_black] active:shadow-none w-72">
+                  <button className="p-2 border border-anastasia-2 rounded-lg text-anastasia-2 bg-anastasia-4 hover:-translate-x-2 hover:-translate-y-2 transition-all duration-300 hover:shadow-[7px_7px_0px_black] w-72">
                     Sign Up
                   </button>
                 </Link>
               </div>
-              <div className="place-items-center p-2  space-y-3">
+              <div className="flex flex-col justify-center items-center gap-3 p-2">
                 <h4 className="text-xl font-semibold text-black">
                   Already have an account?
                 </h4>
@@ -50,7 +50,7 @@ const LandingPage = () => {
                   others. ones!
                 </p>
                 <Link href="/login">
-                  <button className="p-2 border border-anastasia-2 rounded-lg text-anastasia-2 bg-anastasia-4 shadow-[5px_5px_0px_black] active:shadow-none w-72">
+                  <button className="p-2 border border-anastasia-2 rounded-lg text-anastasia-2 bg-anastasia-4 hover:-translate-x-2 hover:-translate-y-2 transition-all duration-300 hover:shadow-[7px_7px_0px_black] w-72">
                     Sign In
                   </button>
                 </Link>
