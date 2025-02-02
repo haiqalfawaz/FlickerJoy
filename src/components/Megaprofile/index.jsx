@@ -1,6 +1,7 @@
 import useLogout from "@/hooks/useLogout";
 import Image from "next/image";
 import React from "react";
+import Link from "next/link";
 
 //Import Icons
 import { FaRegEdit } from "react-icons/fa";
@@ -36,16 +37,20 @@ const MegaProfile = ({ user }) => {
           </div>
         </div>
         <div className="flex justify-center items-center gap-2">
-          <button className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black p-2">
-            <h3 className="text-xl font-semibold text-black">
-              {user.totalFollowing} Following
-            </h3>
-          </button>
-          <button className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black p-2">
-            <h3 className="text-xl font-semibold text-black">
-              {user.totalFollowers} Followers
-            </h3>
-          </button>
+          <Link href={`following/${user.id}`}>
+            <button className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black p-2">
+              <h3 className="text-xl font-semibold text-black">
+                {user.totalFollowing} Following
+              </h3>
+            </button>
+          </Link>
+          <Link href={`followers/${user.id}`}>
+            <button className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black p-2">
+              <h3 className="text-xl font-semibold text-black">
+                {user.totalFollowers} Followers
+              </h3>
+            </button>
+          </Link>
           <button className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black py-2 px-3">
             <FaRegEdit className="text-xl font-semibold text-black" />
           </button>
