@@ -6,6 +6,7 @@ import useComment from "@/hooks/useComment";
 import useLike from "@/hooks/useLike";
 import useDeletePost from "@/hooks/useDeletePost";
 import useDeleteComment from "@/hooks/useDeleteComment";
+import Link from "next/link";
 
 // Import Icons
 import { GoHeart } from "react-icons/go";
@@ -156,17 +157,19 @@ const PostDetailsPage = ({ postDetails, userId }) => {
                   {new Date(postDetails.createdAt).toLocaleDateString("id-ID")}
                 </h3>
               </div>
-              <div className="flex justify-center items-center gap-4 p-1 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black]">
-                <Image
-                  src={postDetails.user?.profilePictureUrl || "/user.png"}
-                  width={50}
-                  height={50}
-                  className="border border-black rounded-full"
-                />
-                <h3 className="text-black font-semibold text-2xl">
-                  @{postDetails.user?.username || "Username"}
-                </h3>
-              </div>
+              <Link href={`/users/${postDetails.userId}`}>
+                <div className="flex justify-center items-center gap-4 p-1 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black]">
+                  <Image
+                    src={postDetails.user?.profilePictureUrl || "/user.png"}
+                    width={50}
+                    height={50}
+                    className="border border-black rounded-full"
+                  />
+                  <h3 className="text-black font-semibold text-2xl">
+                    @{postDetails.user?.username || "Username"}
+                  </h3>
+                </div>
+              </Link>
             </div>
             <div className="bg-anastasia-2 border border-black [box-shadow:5px_5px_black] rounded-lg p-2 w-full text-center">
               <p className="text-xl text-black">{postDetails.caption}</p>
@@ -192,9 +195,11 @@ const PostDetailsPage = ({ postDetails, userId }) => {
                       height={40}
                       className="rounded-full border border-anastasia-2 mr-2"
                     />
-                    <p className="text-xl font-semibold mr-4">
-                      @{comment.user.username} :
-                    </p>
+                    <Link href={`/users/${comment.user.id}`}>
+                      <p className="text-xl font-semibold mr-4">
+                        @{comment.user.username} :
+                      </p>
+                    </Link>
                     <p className="text-base">{comment.comment}</p>
                     {comment.user.id === userId && (
                       <div className="flex justify-center items-center gap-2 py-1 px-2 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black] active:[box-shadow:0px_0px_black]">
