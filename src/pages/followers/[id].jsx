@@ -73,8 +73,6 @@ const FollowersPage = ({ followers, totalPages }) => {
           },
         }
       );
-
-      console.log("Followers ID:", router.query.id);
       const newFollowers = res.data.data.users;
 
       setCurrentFollowers((prev) => [...prev, ...newFollowers]);
