@@ -1,11 +1,13 @@
 import axios from "axios";
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import Link from "next/link";
+import PostUsers from "@/components/PostsUsers";
 
 export async function getServerSideProps(context) {
   const { id } = context.params;
+  const { page = 1, size = 10 } = context.query;
   const token = context.req.cookies.token || "";
   const apiURL = process.env.NEXT_PUBLIC_API_URL;
   const apiKEY = process.env.NEXT_PUBLIC_API_KEY;
@@ -20,9 +22,27 @@ export async function getServerSideProps(context) {
 
     const User = UsersRes.data.data;
 
+    const PostsUsersRes = await axios.get(
+      `${apiURL}/users-post/${User.id}?size=${size}&page=${page}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          apiKey: apiKEY ?? "",
+        },
+      }
+    );
+
+    const { posts, totalPages, currentPage, totalItems } =
+      PostsUsersRes.data.data;
+
     return {
       props: {
         User,
+        posts,
+        totalPages,
+        currentPage: parseInt(currentPage, 10),
+        totalItems,
+        pageSize: parseInt(size, 10),
       },
     };
   } catch (error) {
@@ -30,11 +50,23 @@ export async function getServerSideProps(context) {
     return {
       props: {
         User: null,
+        posts: [],
+        totalPages: 0,
+        currentPage: 1,
+        pageSize: 10,
       },
     };
   }
 }
-const UsersProfile = ({ User }) => {
+
+const UsersProfile = ({
+  User,
+  posts,
+  totalPages,
+  currentPage,
+  totalItems,
+  pageSize,
+}) => {
   return (
     <div className="bg-anastasia-1 h-screen p-5 flex flex-col justify-center items-center gap-5">
       <div className="flex justify-center items-start gap-20 w-full">
@@ -42,12 +74,13 @@ const UsersProfile = ({ User }) => {
         <Navbar />
       </div>
       <div className="w-full flex justify-start items-start gap-5">
+        {/* User Info Section */}
         <div className="w-1/2 h-full">
           <div className="flex flex-col justify-start items-center gap-3 h-full">
             <div className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black w-fit p-3">
               <Image
                 src={User.profilePictureUrl || "/user.png"}
-                alt="post"
+                alt="profile"
                 width={300}
                 height={300}
                 className="rounded-xl"
@@ -91,10 +124,18 @@ const UsersProfile = ({ User }) => {
               </Link>
             </div>
             <div className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black w-full flex justify-center items-center h-24">
-              <p className="textlg font-semibold text-black">{User.bio}</p>
+              <p className="text-lg font-semibold text-black">{User.bio}</p>
             </div>
           </div>
         </div>
+        <PostUsers
+          initialPosts={posts}
+          totalItems={totalItems}
+          totalPages={totalPages}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          User={User}
+        />
       </div>
     </div>
   );
