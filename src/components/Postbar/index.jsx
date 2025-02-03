@@ -1,9 +1,11 @@
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { getCookie } from "cookies-next";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
-//Import Icons
+// Import Icons
 import { GoHeart } from "react-icons/go";
 import { FaRegCommentAlt } from "react-icons/fa";
 
@@ -12,10 +14,14 @@ const Postbar = ({ posts, totalItems, totalPages, currentPage, pageSize }) => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
+  const containerRef = useRef(null); // For scroll event detection
+  const router = useRouter();
 
+  // Function to load more posts
   const loadMorePosts = async () => {
-    setLoading(true);
+    if (loading || !hasMore) return; // Prevent double-loading
 
+    setLoading(true);
     try {
       const token = getCookie("token");
       const apiURL = process.env.NEXT_PUBLIC_API_URL;
@@ -35,11 +41,11 @@ const Postbar = ({ posts, totalItems, totalPages, currentPage, pageSize }) => {
 
       if (newPosts && newPosts.length > 0) {
         setCurrentPosts((prevPosts) => [...prevPosts, ...newPosts]);
-        setPage((prevpPage) => prevpPage + 1);
+        setPage((prevPage) => prevPage + 1);
       }
 
-      if (newPosts < pageSize) {
-        setHasMore(false);
+      if (newPosts.length < pageSize) {
+        setHasMore(false); // No more posts to load
       }
     } catch (error) {
       console.error("Error Loading Posts:", error);
@@ -48,8 +54,44 @@ const Postbar = ({ posts, totalItems, totalPages, currentPage, pageSize }) => {
     }
   };
 
+  // Handle post click to navigate to the post detail page
+  const handleClickPost = (postId) => {
+    router.push(`/post/${postId}`);
+  };
+
+  // Handle infinite scroll by detecting when the user reaches the bottom
+  const handleScroll = () => {
+    const container = containerRef.current;
+    if (container) {
+      if (
+        container.scrollTop + container.clientHeight >=
+        container.scrollHeight - 50
+      ) {
+        loadMorePosts();
+      }
+    }
+  };
+
+  // Attach scroll listener when component mounts
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+    }
+
+    // Clean up listener when the component unmounts
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [page, hasMore, loading]);
+
   return (
-    <div className="h-[80vh] overflow-auto border-4 rounded-2xl border-dashed border-black px-2 py-2 w-[800px]">
+    <div
+      className="h-[80vh] overflow-auto border-4 rounded-2xl border-dashed border-black px-2 py-2 w-[800px]"
+      ref={containerRef}
+    >
       {currentPosts.length === 0 ? (
         <p className="text-center text-black text-2xl mt-3">
           Let follow someone!
@@ -58,6 +100,7 @@ const Postbar = ({ posts, totalItems, totalPages, currentPage, pageSize }) => {
         currentPosts.map((post) => (
           <div
             key={post.id}
+            onClick={() => handleClickPost(post.id)}
             className="flex justify-center items-start h-full gap-7 mb-2"
           >
             <div className="flex flex-col justify-center items-center gap-10">
@@ -82,16 +125,19 @@ const Postbar = ({ posts, totalItems, totalPages, currentPage, pageSize }) => {
                 <p>{new Date(post.createdAt).toLocaleDateString("id-ID")}</p>{" "}
                 {/* created at */}
               </div>
-              <div className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-2xl text-black flex justify-center items-center gap-2 w-full">
-                <Image
-                  src={"/user.png"}
-                  alt="user"
-                  width={50}
-                  height={50}
-                  className="border-2 rounded-xl border-black"
-                />
-                <p>@{post.user.username}</p> {/* username */}
-              </div>
+              <Link href={`/users/${post.user.id}`}>
+                <div className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-2xl text-black flex justify-center items-center gap-2 w-full">
+                  <Image
+                    src={"/user.png"}
+                    alt="user"
+                    width={50}
+                    height={50}
+                    className="border-2 rounded-xl border-black"
+                  />
+                  <p>@{post.user.username}</p> {/* username */}
+                </div>
+              </Link>
+
               <div className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-xl text-black h-96 w-72 flex justify-center items-center text-center">
                 {post.caption} {/* caption */}
               </div>
@@ -100,19 +146,15 @@ const Postbar = ({ posts, totalItems, totalPages, currentPage, pageSize }) => {
         ))
       )}
 
-      {hasMore && !loading && currentPosts.length > 0 ? (
-        <div className="flex justify-center items-center p-2 border border-black rounded-lg mt-4">
-          <button
-            className="text-xl text-black font-semibold"
-            onClick={loadMorePosts}
-            disabled={loading}
-          >
-            {loading ? "Loading..." : "Load More Posts"}
-          </button>
-        </div>
-      ) : (
+      {loading && (
         <p className="text-center text-black text-2xl mt-3">
-          No More Post to Load!
+          Loading more posts...
+        </p>
+      )}
+
+      {!hasMore && currentPosts.length > 0 && (
+        <p className="text-center text-black text-2xl mt-3">
+          No More Posts to Load!
         </p>
       )}
     </div>
