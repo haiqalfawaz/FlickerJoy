@@ -1,5 +1,4 @@
 import axios from "axios";
-import React from "react";
 
 const deletePostAPI = async (req, res) => {
   const token = req.cookies.token || "";

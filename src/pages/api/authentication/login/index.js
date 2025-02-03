@@ -1,6 +1,4 @@
-import React from "react";
 import axios from "axios";
-import { headers } from "next/headers";
 
 const loginAPI = async (req, res) => {
   try {

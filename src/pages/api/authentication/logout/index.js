@@ -1,4 +1,3 @@
-import React from "react";
 import { deleteCookie } from "cookies-next";
 import axios from "axios";
 
