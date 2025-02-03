@@ -69,7 +69,7 @@ const PostDetailsPage = ({ postDetails, userId }) => {
   const {
     isLiked,
     isLoading: isloadingLike,
-    handleLike,
+    handleLikeUnlike,
     error: errorLike,
     totalLikes,
     setIsLiked,
@@ -130,7 +130,7 @@ const PostDetailsPage = ({ postDetails, userId }) => {
               <div className="flex justify-center items-center gap-2 py-1 px-2 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black] active:[box-shadow:0px_0px_black]">
                 <button
                   className="text-black font-bold text-5xl"
-                  onClick={() => handleLike(postDetails.id)}
+                  onClick={() => handleLikeUnlike(postDetails.id)}
                   disabled={isloadingLike}
                 >
                   {isLiked ? <GoHeartFill /> : <GoHeart />}
