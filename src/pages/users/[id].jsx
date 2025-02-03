@@ -1,9 +1,15 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React from "react";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import Link from "next/link";
 import PostUsers from "@/components/PostsUsers";
+import useFollow from "@/hooks/useFollow";
+
+//import icons
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { RiUserFollowFill } from "react-icons/ri";
+import { RiUserUnfollowFill } from "react-icons/ri";
 
 export async function getServerSideProps(context) {
   const { id } = context.params;
@@ -67,6 +73,11 @@ const UsersProfile = ({
   totalItems,
   pageSize,
 }) => {
+  const { isFollowed, isLoading, error, handleFollowUnfollow } = useFollow();
+
+  const handleFollowOrUnfollow = (userId) => {
+    handleFollowUnfollow(userId);
+  };
   return (
     <div className="bg-anastasia-1 h-screen p-5 flex flex-col justify-center items-center gap-5">
       <div className="flex justify-center items-start gap-20 w-full">
@@ -122,6 +133,26 @@ const UsersProfile = ({
                   </h3>
                 </button>
               </Link>
+              <button
+                className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black p-2"
+                onClick={() => handleFollowOrUnfollow(User.id)}
+              >
+                <h3 className="text-xl font-semibold text-black">
+                  {isLoading ? (
+                    <AiOutlineLoading3Quarters className="animate-spin" />
+                  ) : isFollowed ? (
+                    <div className="flex justify-center items-center gap-2">
+                      <RiUserUnfollowFill />
+                      <p>Unfollow</p>
+                    </div>
+                  ) : (
+                    <div className="flex justify-center items-center gap-2">
+                      <RiUserFollowFill />
+                      <p>Follow</p>
+                    </div>
+                  )}
+                </h3>
+              </button>
             </div>
             <div className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black w-full flex justify-center items-center h-24">
               <p className="text-lg font-semibold text-black">{User.bio}</p>
