@@ -30,8 +30,8 @@ export async function getServerSideProps(context) {
       }
     );
 
-    const StoryRes = await axios.get(
-      `${apiURL}/following-story?size=${size}&page=${page}`,
+    const MyFollowingRes = await axios.get(
+      `${apiURL}/my-following?size=${size}&page=${page}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -50,11 +50,11 @@ export async function getServerSideProps(context) {
     } = PostRes.data.data;
 
     const {
-      stories,
-      totalItems: totalStories,
-      totalPages: totalStoryPages,
-      currentPage: currentStoryPage,
-    } = StoryRes.data.data;
+      users,
+      totalItems: totalFollowing,
+      totalPages: totalFollowingPages,
+      currentPage: currentFollowingPage,
+    } = MyFollowingRes.data.data;
 
     return {
       props: {
@@ -63,10 +63,10 @@ export async function getServerSideProps(context) {
         totalPosts,
         totalPostPages,
         currentPostPage: parseInt(currentPostPage, 10),
-        stories,
-        totalStories,
-        totalStoryPages,
-        currentStoryPage: parseInt(currentStoryPage, 10),
+        users,
+        totalFollowing,
+        totalFollowingPages,
+        currentFollowingPage: parseInt(currentFollowingPage, 10),
         pageSize: parseInt(size, 10),
       },
     };
@@ -79,10 +79,10 @@ export async function getServerSideProps(context) {
         totalPosts: 0,
         totalPostPages: 0,
         currentPostPage: 1,
-        stories: [],
-        totalStories: 0,
-        totalStoryPages: 0,
-        currentStoryPage: 1,
+        users,
+        totalFollowing: 0,
+        totalFollowingPages: 0,
+        currentFollowingPage: 1,
         pageSize: 10,
       },
     };
@@ -95,11 +95,11 @@ const HomePage = ({
   totalPosts,
   totalPostPages,
   currentPostPage,
+  users,
+  totalFollowing,
+  totalFollowingPages,
+  currentFollowingPage,
   pageSize,
-  stories,
-  totalStories,
-  totalStoryPages,
-  currentStoryPage,
 }) => {
   return (
     <div className="bg-anastasia-1 h-screen p-5 flex flex-col justify-center items-center gap-5">
@@ -109,10 +109,11 @@ const HomePage = ({
       </div>
       <div className="w-full flex justify-start items-start gap-5">
         <Storybar
-          stories={stories}
-          totalItems={totalStories}
-          totalPages={totalStoryPages}
-          currentPage={currentStoryPage}
+          users={users}
+          totalFollowing={totalFollowing}
+          totalFollowingPages={totalFollowingPages}
+          currentFollowingPage={currentFollowingPage}
+          pageSize={pageSize}
         />
         <Postbar
           posts={posts}
