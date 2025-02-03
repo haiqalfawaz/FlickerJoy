@@ -14,12 +14,11 @@ const Postbar = ({ posts, totalItems, totalPages, currentPage, pageSize }) => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
-  const containerRef = useRef(null); // For scroll event detection
+  const containerRef = useRef(null);
   const router = useRouter();
 
-  // Function to load more posts
   const loadMorePosts = async () => {
-    if (loading || !hasMore) return; // Prevent double-loading
+    if (loading || !hasMore) return;
 
     setLoading(true);
     try {
@@ -45,7 +44,7 @@ const Postbar = ({ posts, totalItems, totalPages, currentPage, pageSize }) => {
       }
 
       if (newPosts.length < pageSize) {
-        setHasMore(false); // No more posts to load
+        setHasMore(false);
       }
     } catch (error) {
       console.error("Error Loading Posts:", error);
@@ -54,12 +53,10 @@ const Postbar = ({ posts, totalItems, totalPages, currentPage, pageSize }) => {
     }
   };
 
-  // Handle post click to navigate to the post detail page
   const handleClickPost = (postId) => {
     router.push(`/post/${postId}`);
   };
 
-  // Handle infinite scroll by detecting when the user reaches the bottom
   const handleScroll = () => {
     const container = containerRef.current;
     if (container) {
@@ -72,14 +69,12 @@ const Postbar = ({ posts, totalItems, totalPages, currentPage, pageSize }) => {
     }
   };
 
-  // Attach scroll listener when component mounts
   useEffect(() => {
     const container = containerRef.current;
     if (container) {
       container.addEventListener("scroll", handleScroll);
     }
 
-    // Clean up listener when the component unmounts
     return () => {
       if (container) {
         container.removeEventListener("scroll", handleScroll);
