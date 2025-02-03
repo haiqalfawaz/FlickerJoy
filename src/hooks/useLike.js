@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import { useState } from "react";
 import { getCookies } from "cookies-next";
 
 const useLike = () => {
@@ -8,7 +8,7 @@ const useLike = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleLike = async (postId) => {
+  const handleLikeUnlike = async (postId) => {
     if (isLoading) return;
 
     const token = getCookies().token || "";
@@ -18,7 +18,31 @@ const useLike = () => {
     setIsLoading(true);
 
     try {
-      await axios.post("/api/like", { postId });
+      if (isLiked) {
+        await axios.post(
+          "/api/unlike",
+          { postId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              apiKey: apiKEY ?? "",
+            },
+          }
+        );
+        setIsLiked(false);
+      } else {
+        await axios.post(
+          "/api/like",
+          { postId },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              apiKey: apiKEY ?? "",
+            },
+          }
+        );
+        setIsLiked(true);
+      }
 
       const response = await axios.get(`${apiURL}/post/${postId}`, {
         headers: {
@@ -26,12 +50,10 @@ const useLike = () => {
           apiKey: apiKEY ?? "",
         },
       });
-
-      setIsLiked(response.data.data.isLike);
       setTotalLikes(response.data.data.totalLikes);
       setError(null);
     } catch (error) {
-      setError("Failed to like post");
+      setError("Failed to like/unlike post");
     } finally {
       setIsLoading(false);
     }
@@ -41,7 +63,7 @@ const useLike = () => {
     isLiked,
     totalLikes,
     error,
-    handleLike,
+    handleLikeUnlike,
     isLoading,
     setIsLiked,
     setTotalLikes,
