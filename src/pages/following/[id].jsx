@@ -74,12 +74,11 @@ const FollowingPage = ({ followings, totalPages }) => {
         }
       );
 
-      console.log("Following ID:", router.query.id);
       const newFollowing = res.data.data.users;
 
       setCurrentFollowing((prev) => [...prev, ...newFollowing]);
 
-      if (newFollowers.length < 10) {
+      if (newFollowing.length < 10) {
         setHasMore(false);
       }
       setpage((prevPage) => prevPage + 1);
@@ -99,7 +98,7 @@ const FollowingPage = ({ followings, totalPages }) => {
         container.scrollTop + container.clientHeight >=
         container.scrollHeight - 1
       ) {
-        loadMoreFollowers();
+        loadMoreFollowing();
       }
     };
 
