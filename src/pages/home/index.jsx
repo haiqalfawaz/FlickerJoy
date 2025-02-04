@@ -109,6 +109,7 @@ const HomePage = ({
       </div>
       <div className="w-full flex justify-start items-start gap-5">
         <Storybar
+          user={user}
           users={users}
           totalFollowing={totalFollowing}
           totalFollowingPages={totalFollowingPages}
