@@ -51,9 +51,11 @@ const MegaProfile = ({ user }) => {
               </h3>
             </button>
           </Link>
-          <button className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black py-2 px-3">
-            <FaRegEdit className="text-xl font-semibold text-black" />
-          </button>
+          <Link href={"/edit/edit-profile"}>
+            <button className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black py-2 px-3">
+              <FaRegEdit className="text-xl font-semibold text-black" />
+            </button>
+          </Link>
           <button
             className="bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black py-2 px-3 active:[box-shadow:0px_0px_black]"
             onClick={handleLogout}
