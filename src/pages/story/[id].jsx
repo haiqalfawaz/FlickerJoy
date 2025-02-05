@@ -3,11 +3,11 @@ import axios from "axios";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import useDeleteStory from "@/hooks/useDeleteStory";
+import { useRouter } from "next/router";
 
 // Import Icons
 import { FaAngleDown } from "react-icons/fa6";
 import { MdDeleteForever } from "react-icons/md";
-import { useRouter } from "next/router";
 
 export async function getServerSideProps(context) {
   const { id } = context.params;
@@ -118,7 +118,7 @@ const StoryDetailsPage = ({ StoryDetails, StoryViews, loggedUserId }) => {
               alt="Story"
               width={600}
               height={600}
-              className="rounded-2xl object-cover"
+              className="rounded-2xl object-cover w-96 h-96"
             />
             <div className="flex justify-center items-center">
               {isUserStory && (
