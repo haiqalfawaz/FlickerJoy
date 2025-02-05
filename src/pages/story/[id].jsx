@@ -1,10 +1,12 @@
 import Navbar from "@/components/Navbar";
 import axios from "axios";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import useDeleteStory from "@/hooks/useDeleteStory";
 
 // Import Icons
 import { FaAngleDown } from "react-icons/fa6";
+import { MdDeleteForever } from "react-icons/md";
 
 export async function getServerSideProps(context) {
   const { id } = context.params;
@@ -28,13 +30,22 @@ export async function getServerSideProps(context) {
       },
     });
 
+    const loggedUserRes = await axios.get(`${apiURL}/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        apiKey: apiKEY ?? "",
+      },
+    });
+
     const StoryDetails = StoryDetailRes.data.data;
     const StoryViews = StoryViewsRes.data.data;
+    const loggedUserId = loggedUserRes.data.data;
 
     return {
       props: {
         StoryDetails,
         StoryViews,
+        loggedUserId,
       },
     };
   } catch (error) {
@@ -43,21 +54,33 @@ export async function getServerSideProps(context) {
       props: {
         StoryDetails: [],
         StoryViews: [],
+        loggedUserId: [],
       },
     };
   }
 }
 
-const StoryDetailsPage = ({ StoryDetails, StoryViews }) => {
+const StoryDetailsPage = ({ StoryDetails, StoryViews, loggedUserId }) => {
   const [currentStoryDetails, setCurrentStoryDetails] = useState(
     StoryDetails || []
   );
   const [currentStoryViews, setCurrentStoryViews] = useState(StoryViews || []);
-
   const [isViewedOpen, setIsViewedOpen] = useState(false);
+  const [isUserStory, setIsUserStory] = useState(false);
+  const { deleteStory, loadingDeleteStory } = useDeleteStory();
 
   const handleViewersToggle = () => {
     setIsViewedOpen(!isViewedOpen);
+  };
+
+  useEffect(() => {
+    if (loggedUserId.id === StoryDetails.userId) {
+      setIsUserStory(true);
+    }
+  }, [loggedUserId]);
+
+  const handleDeleteStory = (storyId) => {
+    deleteStory(storyId, loggedUserId.id);
   };
 
   return (
@@ -93,6 +116,14 @@ const StoryDetailsPage = ({ StoryDetails, StoryViews }) => {
               className="rounded-2xl object-cover"
             />
             <div className="flex justify-center items-center">
+              {isUserStory && (
+                <button
+                  className="text-black text-2xl"
+                  onClick={() => handleDeleteStory(currentStoryDetails.id)}
+                >
+                  <MdDeleteForever />
+                </button>
+              )}
               <p>{currentStoryDetails.caption}</p>
               <p>Viewer</p>
             </div>
@@ -100,7 +131,7 @@ const StoryDetailsPage = ({ StoryDetails, StoryViews }) => {
         </div>
         <div
           className={`flex flex-col justify-start items-center bg-anastasia-3 rounded-xl border-2 border-anastasia-2 w-96 p-4 gap-3 transition-all duration-500  ${
-            isViewedOpen ? "max-h-[575px]" : "max-h-20"
+            isViewedOpen ? "max-h-[575px]" : "max-h-fit"
           } overflow-hidden`}
         >
           <div className="flex justify-between items-center w-full">
