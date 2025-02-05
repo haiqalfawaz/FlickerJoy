@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import React from "react";
 
 const useDeletePost = () => {
   const router = useRouter();
