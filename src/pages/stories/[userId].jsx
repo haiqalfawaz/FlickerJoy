@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useRouter } from "next/router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Image from "next/image";
 import { getCookie } from "cookies-next";
@@ -16,26 +16,48 @@ export async function getServerSideProps(context) {
     const apiURL = process.env.NEXT_PUBLIC_API_URL;
     const apiKEY = process.env.NEXT_PUBLIC_API_KEY;
 
-    const StoryRes = await axios.get(
-      `${apiURL}/following-story?size=10&page=1`,
-      {
+    const UserRes = await axios.get(`${apiURL}/user`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        apiKey: apiKEY ?? "",
+      },
+    });
+    const loggedUser = UserRes.data.data;
+
+    let stories = [];
+    let totalPages = 0;
+
+    if (userId === loggedUser.id) {
+      const StoryRes = await axios.get(`${apiURL}/my-story?size=10&page=1`, {
         headers: {
           Authorization: `Bearer ${token}`,
           apiKey: apiKEY ?? "",
         },
-      }
-    );
-
-    // console.log("Fetched stories:", StoryRes.data.data.stories);
-
-    const filteredStories = StoryRes.data.data.stories.filter(
-      (story) => story.userId === userId
-    );
+      });
+      stories = StoryRes.data.data.stories;
+      totalPages = StoryRes.data.data.totalPages;
+    } else {
+      const StoryRes = await axios.get(
+        `${apiURL}/following-story?size=10&page=1`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            apiKey: apiKEY ?? "",
+          },
+        }
+      );
+      const filteredStories = StoryRes.data.data.stories.filter(
+        (story) => story.userId === userId
+      );
+      stories = filteredStories;
+      totalPages = StoryRes.data.data.totalPages;
+    }
 
     return {
       props: {
-        initialStories: filteredStories || [],
-        totalPages: StoryRes.data.data.totalPages,
+        initialStories: stories,
+        totalPages: totalPages,
+        loggedUser: loggedUser,
       },
     };
   } catch (error) {
@@ -44,12 +66,13 @@ export async function getServerSideProps(context) {
       props: {
         initialStories: [],
         totalPages: 0,
+        loggedUser: null,
       },
     };
   }
 }
 
-const StoriesPage = ({ initialStories, totalPages }) => {
+const StoriesPage = ({ initialStories, totalPages, loggedUser }) => {
   const [userStories, setUserStories] = useState(initialStories || []);
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -71,15 +94,26 @@ const StoriesPage = ({ initialStories, totalPages }) => {
       const apiURL = process.env.NEXT_PUBLIC_API_URL;
       const apiKEY = process.env.NEXT_PUBLIC_API_KEY;
 
-      const res = await axios.get(
-        `${apiURL}/following-story?size=10&page=${page}`,
-        {
+      let res;
+
+      if (userId === loggedUser.id) {
+        res = await axios.get(`${apiURL}/my-story?size=10&page=${page}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             apiKey: apiKEY ?? "",
           },
-        }
-      );
+        });
+      } else {
+        res = await axios.get(
+          `${apiURL}/following-story?size=10&page=${page}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              apiKey: apiKEY ?? "",
+            },
+          }
+        );
+      }
 
       const filteredStories = res.data.data.stories.filter(
         (story) => story.userId === userId
