@@ -13,6 +13,15 @@ export async function getServerSideProps(context) {
 
     const { page = 1, size = 10 } = context.query;
 
+    if (!token) {
+      return {
+        redirect: {
+          destination: "/login",
+          permanent: false,
+        },
+      };
+    }
+
     const UserRes = await axios.get(`${apiURL}/user`, {
       headers: {
         Authorization: `Bearer ${token}`,

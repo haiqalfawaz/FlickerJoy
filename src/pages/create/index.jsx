@@ -8,6 +8,23 @@ import useCreateStory from "@/hooks/useCreateStory";
 import { ImCross } from "react-icons/im";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
+export async function getServerSideProps(context) {
+  const token = context.req.cookies.token || "";
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}
+
 const CreatePostStoryPage = () => {
   const [isCreatePostOpen, setIsCreatePostOpen] = useState(true);
   const [isCreateStoryOpen, setIsCreateStoryOpen] = useState(false);

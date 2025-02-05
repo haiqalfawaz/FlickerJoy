@@ -11,6 +11,15 @@ export async function getServerSideProps(context) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const apiKEY = process.env.NEXT_PUBLIC_API_KEY;
 
+    if (!token) {
+      return {
+        redirect: {
+          destination: "/login",
+          permanent: false,
+        },
+      };
+    }
+
     const ExploreRes = await axios.get(
       `${apiUrl}/explore-post?size=10&page=1`,
       {
