@@ -15,6 +15,8 @@ import { GoHeartFill } from "react-icons/go";
 import { IoSend } from "react-icons/io5";
 import { MdDeleteForever } from "react-icons/md";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { AiFillEdit } from "react-icons/ai";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps(context) {
   const { id } = context.params;
@@ -151,6 +153,15 @@ const PostDetailsPage = ({ postDetails, userId }) => {
                     <MdDeleteForever />
                   </button>
                 </div>
+              )}
+              {isUserPost && (
+                <Link href={`/edit/edit-post/${postDetails.id}`}>
+                  <div className="flex justify-center items-center gap-4 p-1 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black] active:[box-shadow:0px_0px_black]">
+                    <button className="text-black text-5xl">
+                      <AiFillEdit />
+                    </button>
+                  </div>
+                </Link>
               )}
               <div className="flex justify-center items-center gap-4 p-1 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black] h-[59px]">
                 <h3 className="text-black text-2xl">
