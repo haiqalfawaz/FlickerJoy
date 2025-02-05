@@ -7,6 +7,7 @@ import useDeleteStory from "@/hooks/useDeleteStory";
 // Import Icons
 import { FaAngleDown } from "react-icons/fa6";
 import { MdDeleteForever } from "react-icons/md";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps(context) {
   const { id } = context.params;
@@ -68,6 +69,7 @@ const StoryDetailsPage = ({ StoryDetails, StoryViews, loggedUserId }) => {
   const [isViewedOpen, setIsViewedOpen] = useState(false);
   const [isUserStory, setIsUserStory] = useState(false);
   const { deleteStory, loadingDeleteStory } = useDeleteStory();
+  const router = useRouter();
 
   const handleViewersToggle = () => {
     setIsViewedOpen(!isViewedOpen);
@@ -83,6 +85,9 @@ const StoryDetailsPage = ({ StoryDetails, StoryViews, loggedUserId }) => {
     deleteStory(storyId, loggedUserId.id);
   };
 
+  const handleClickViewers = (userId) => {
+    router.push(`/users/${userId}`);
+  };
   return (
     <div className="bg-anastasia-1 h-screen p-5 flex flex-col justify-center items-center gap-5">
       <div className="flex justify-center items-start gap-20 w-full">
@@ -150,7 +155,8 @@ const StoryDetailsPage = ({ StoryDetails, StoryViews, loggedUserId }) => {
                 currentStoryViews.map((view) => (
                   <div
                     key={view.id}
-                    className="flex justify-start items-center gap-2"
+                    onClick={() => handleClickViewers(view.user.id)}
+                    className="flex justify-start items-center gap-2 cursor-pointer"
                   >
                     <Image
                       src={view.user.profilePictureUrl}
