@@ -5,6 +5,7 @@ import React, { useState } from "react";
 const useRegister = () => {
   const router = useRouter();
   const [sucsess, setSucsess] = useState("");
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     username: "",
@@ -23,6 +24,7 @@ const useRegister = () => {
   };
 
   const handleRegistration = async () => {
+    setLoading(true);
     try {
       const res = await axios.post("api/authentication/register", formData, {
         headers: {
@@ -30,9 +32,12 @@ const useRegister = () => {
         },
       });
       console.log(res.data.message);
+      setSucsess("Register Sucsessful");
       router.push("/login");
     } catch (error) {
       console.log("err", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -40,8 +45,8 @@ const useRegister = () => {
     handleChange,
     handleRegistration,
     formData,
-    setFormData,
-    setSucsess,
+    sucsess,
+    loading,
   };
 };
 
