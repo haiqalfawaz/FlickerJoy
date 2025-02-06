@@ -78,7 +78,7 @@ const FormLogin = () => {
       )}
       {error && <p className="text-2xl font-semibold text-red-600">{error}</p>}
       {/* Registration Link */}
-      <p className="text-center ">
+      <p className="text-center md:text-xl text-base">
         Don't have an account?{" "}
         <Link href="/register" className="hover:underline">
           Register Here!
