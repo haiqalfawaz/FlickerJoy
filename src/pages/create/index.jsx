@@ -37,6 +37,7 @@ const CreatePostStoryPage = () => {
     uploadLoading,
     postLoading,
     error,
+    succsessCreatePost,
   } = useCreatePost();
 
   const {
@@ -46,6 +47,7 @@ const CreatePostStoryPage = () => {
     urlImageStory,
     storyData,
     storyLoading,
+    succsessCreateStory,
   } = useCreateStory();
 
   const handleToggleCreatepost = () => {
@@ -94,12 +96,27 @@ const CreatePostStoryPage = () => {
               <h3 className="text-2xl font-semibold text-black">
                 Don't forget to choose your gorgeous image and sweet words!
               </h3>
+              {succsessCreatePost && (
+                <div className="absolute bottom-5 right-5 w-fit h-10 border border-black px-2 py-1 bg-red-500 rounded-lg shadow-[3px_3px_0_black]">
+                  <h3 className="text-2xl">{succsessCreatePost}</h3>
+                </div>
+              )}
               <div className="flex justify-center items-start p-3 rounded-xl shadow-[5px_5px_0_black] bg-anastasia-1 border border-black">
-                <input
-                  type="file"
-                  className="text-black"
-                  onChange={handleImageChangePost}
-                />
+                <div className="flex flex-col justify-center items-center gap-3">
+                  <input
+                    type="file"
+                    className="text-black"
+                    onChange={handleImageChangePost}
+                  />
+                  {urlImage && (
+                    <Image
+                      src={urlImage}
+                      width={150}
+                      height={150}
+                      className="border border-black rounded-lg"
+                    />
+                  )}
+                </div>
                 <input
                   type="text"
                   placeholder="Write your captions!"
@@ -153,12 +170,27 @@ const CreatePostStoryPage = () => {
               <h3 className="text-2xl font-semibold text-black">
                 Don't forget to choose your gorgeous image and sweet words!
               </h3>
+              {succsessCreateStory && (
+                <div className="absolute bottom-5 right-5 w-fit h-10 border border-black px-2 py-1 bg-red-500 rounded-lg shadow-[3px_3px_0_black]">
+                  <h3 className="text-2xl">{succsessCreateStory}</h3>
+                </div>
+              )}
               <div className="flex justify-center items-start p-3 rounded-xl shadow-[5px_5px_0_black] bg-anastasia-1 border border-black">
-                <input
-                  type="file"
-                  className="text-black"
-                  onChange={handleImageChangeStory}
-                />
+                <div className="flex flex-col justify-center items-center gap-3">
+                  <input
+                    type="file"
+                    className="text-black"
+                    onChange={handleImageChangeStory}
+                  />
+                  {urlImageStory && (
+                    <Image
+                      src={urlImageStory}
+                      width={150}
+                      height={150}
+                      className="border border-black rounded-lg"
+                    />
+                  )}
+                </div>
                 <input
                   type="text"
                   placeholder="Write your captions!"
