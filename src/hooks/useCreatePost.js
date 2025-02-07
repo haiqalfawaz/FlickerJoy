@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { getCookies } from "cookies-next";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 const useCreatePost = () => {
   const [urlImage, setUrlImage] = useState(null);
   const [postData, setPostData] = useState({ caption: "" });
   const [uploadLoading, setUploadLoading] = useState(false);
   const [postLoading, setPostLoading] = useState(false);
+  const [succsessCreatePost, setSuccsessCreatePost] = useState("");
   const [error, setError] = useState(null);
+  const router = useRouter();
 
   const handleChange = (e) => {
     setPostData({
@@ -72,6 +75,8 @@ const useCreatePost = () => {
       });
 
       console.log(res.data);
+      setSuccsessCreatePost("Create Post Succsess!");
+      router.push("/home");
     } catch (error) {
       setError(error.response ? error.response.data.error : error.message);
     } finally {
@@ -88,6 +93,7 @@ const useCreatePost = () => {
     uploadLoading,
     postLoading,
     error,
+    succsessCreatePost,
   };
 };
 
