@@ -122,7 +122,7 @@ const PostDetailsPage = ({ postDetails, userId }) => {
         <div className="flex justify-center items-start h-full gap-7 mb-2">
           <div className="flex flex-col justify-center items-center w-1/2 gap-4">
             <Image
-              src={postDetails.imageUrl || "/user.png"}
+              src={postDetails.imageUrl || "/noImage.png"}
               alt="Post"
               width={700}
               height={700}
@@ -168,7 +168,13 @@ const PostDetailsPage = ({ postDetails, userId }) => {
                   {new Date(postDetails.createdAt).toLocaleDateString("id-ID")}
                 </h3>
               </div>
-              <Link href={`/users/${postDetails.userId}`}>
+              <Link
+                href={
+                  userId === postDetails.userId
+                    ? "/profile"
+                    : `/users/${postDetails.userId}`
+                }
+              >
                 <div className="flex justify-center items-center gap-4 p-1 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black]">
                   <Image
                     src={postDetails.user?.profilePictureUrl || "/user.png"}
