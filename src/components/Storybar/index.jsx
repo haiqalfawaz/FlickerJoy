@@ -85,15 +85,15 @@ const Storybar = ({
   };
 
   return (
-    <div className="flex flex-col justify-center items-center gap-5">
+    <div className="flex flex-col justify-center items-center gap-4 lg:w-fit w-full">
       {/* header story */}
-      <div className="py-3 px-5 bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black w-72">
+      <div className="py-3 px-5 bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black w-72 lg:flex justify-center items-center hidden">
         <h1 className="font-semibold text-4xl text-center text-black">Story</h1>
       </div>
-      <div className="px-5 bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black w-72 flex flex-col justify-center items-center pb-3">
+      <div className="lg:px-5 bg-anastasia-2 rounded-2xl [box-shadow:5px_5px_black] border border-black lg:w-full w-full px-2 gap-2 flex lg:flex-col justify-center items-center py-1">
         {/* My Story */}
         <div
-          className="flex flex-col justify-center items-center border-black border-b-2 pb-2 w-full cursor-pointer"
+          className="flex flex-col justify-center items-center border-black lg:border-b-2 lg:border-r-0 border-r-2 pb-2 lg:w-full w-40 cursor-pointer"
           onClick={() => handleUserClick(user.id)}
         >
           <Image
@@ -101,14 +101,17 @@ const Storybar = ({
             alt="user"
             width={100}
             height={100}
+            className="cursor-pointer lg:w-[100px] lg:h-[100px] md:w-20 md:h-20 w-16 h-16"
           />
-          <p className="text-black text-2xl">Your Story</p>
+          <p className="text-black lg:text-2xl md:text-xl text-base">
+            Your Story
+          </p>
         </div>
         {/* Following Stories */}
         {currentFollowing.length === 0 ? (
           <p className="text-black text-2xl">No Following Story</p>
         ) : (
-          <div className="flex flex-col justify-start items-center mt-2 overflow-y-auto h-[370px] border border-black w-full gap-2">
+          <div className="flex lg:flex-col justify-start items-center lg:mt-1 ml-1 overflow-y-auto lg:h-[370px] w-full lg:gap-2 gap-6">
             {currentFollowing.map((following) => (
               <div
                 className="flex flex-col justify-center items-center pb-2 cursor-pointer"
@@ -120,9 +123,11 @@ const Storybar = ({
                   width={100}
                   height={100}
                   onClick={() => handleUserClick(following.id)}
-                  className="cursor-pointer"
+                  className="cursor-pointer lg:w-[100px] lg:h-[100px] md:w-20 md:h-20 w-16 h-16"
                 />
-                <p className="text-black text-2xl">{following.username}</p>
+                <p className="text-black lg:text-2xl md:text-xl text-base">
+                  {following.username}
+                </p>
               </div>
             ))}
           </div>

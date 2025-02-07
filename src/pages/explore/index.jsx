@@ -54,13 +54,6 @@ const ExplorePage = ({ explorePosts }) => {
   const containerRef = useRef(null);
   const router = useRouter();
 
-  const handleImageError = (postId) => {
-    setImageErrors((prevState) => ({
-      ...prevState,
-      [postId]: true,
-    }));
-  };
-
   const handleClickPost = (postId) => {
     router.push(`post/${postId}`);
   };
@@ -132,26 +125,21 @@ const ExplorePage = ({ explorePosts }) => {
       </div>
       <div
         ref={containerRef}
-        className="border-2 border-dashed border-black w-full h-[550px] rounded-lg p-4 overflow-y-auto"
+        className="border-2 border-dashed border-black w-full h-full rounded-lg p-4 overflow-y-auto"
       >
         <div className="flex flex-wrap justify-center items-center gap-5">
           {currentExplorePosts.map((explorePost) => (
             <div
               key={explorePost.id}
-              className="border border-black shadow-lg rounded-lg w-64 h-64 flex justify-center items-center cursor-pointer hover:scale-105 transition-all duration-300"
+              className="border border-black shadow-lg rounded-lg flex w-72 h-72 justify-center items-center cursor-pointer hover:scale-105 transition-all duration-300"
               onClick={() => handleClickPost(explorePost.id)}
             >
               <Image
-                src={
-                  imageErrors[explorePost.id] || !explorePost.imageUrl
-                    ? "/user.png"
-                    : explorePost.imageUrl
-                }
+                src={explorePost.imageUrl || "/noImage.png"}
                 alt={explorePost.caption || "User Post"}
                 width={320}
                 height={320}
-                className="object-cover text-black "
-                onError={() => handleImageError(explorePost.id)}
+                className="object-contain max-w-full max-h-full"
               />
             </div>
           ))}

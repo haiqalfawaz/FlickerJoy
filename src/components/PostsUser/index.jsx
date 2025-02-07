@@ -96,7 +96,7 @@ const PostsUser = ({
               alt="User Posts"
               width={200}
               height={200}
-              className="object-cover"
+              className="object-contain max-w-full max-h-full"
             />
           </div>
         ))}
