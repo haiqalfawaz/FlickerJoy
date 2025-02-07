@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { getCookies } from "cookies-next";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 const useCreateStory = () => {
   const [urlImageStory, setUrlImageStory] = useState(null);
   const [storyData, setStoryData] = useState({ caption: "" });
   const [uploadStoryLoading, setUploadStoryLoading] = useState(false);
   const [storyLoading, setStoryLoading] = useState(false);
+  const [succsessCreateStory, setSuccsessCreateStory] = useState("");
   const [errorStory, setErrorStory] = useState(null);
+  const router = useRouter();
 
   const handleChangeCaption = (e) => {
     setStoryData({
@@ -72,6 +75,8 @@ const useCreateStory = () => {
       });
 
       console.log(res.data);
+      setSuccsessCreateStory("Create Story Success!");
+      router.push("/home");
     } catch (error) {
       setError(error.response ? error.response.data.error : error.message);
     } finally {
@@ -86,6 +91,7 @@ const useCreateStory = () => {
     urlImageStory,
     storyData,
     storyLoading,
+    succsessCreateStory,
   };
 };
 
