@@ -29,6 +29,18 @@ export async function getServerSideProps(context) {
       },
     });
 
+    const LoggedUserId = UserRes.data.data.id;
+
+    const MyPostsRes = await axios.get(
+      `${apiURL}/users-post/${LoggedUserId}?size=${size}&page=${page}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          apiKey: apiKEY ?? "",
+        },
+      }
+    );
+
     const PostRes = await axios.get(
       `${apiURL}/following-post?size=${size}&page=${page}`,
       {
@@ -65,6 +77,13 @@ export async function getServerSideProps(context) {
       currentPage: currentFollowingPage,
     } = MyFollowingRes.data.data;
 
+    const {
+      posts: myPosts,
+      totalItems: totalMyPosts,
+      totalPages: totalMyPostsPages,
+      currentPage: currentMyPostsPage,
+    } = MyPostsRes.data.data;
+
     return {
       props: {
         user: user || null,
@@ -76,6 +95,10 @@ export async function getServerSideProps(context) {
         totalFollowing,
         totalFollowingPages,
         currentFollowingPage: parseInt(currentFollowingPage, 10),
+        myPosts,
+        totalMyPosts,
+        totalMyPostsPages,
+        currentMyPostsPage: parseInt(currentMyPostsPage, 10),
         pageSize: parseInt(size, 10),
       },
     };
@@ -108,15 +131,19 @@ const HomePage = ({
   totalFollowing,
   totalFollowingPages,
   currentFollowingPage,
+  myPosts,
+  totalMyPosts,
+  totalMyPostsPages,
+  currentMyPostsPage,
   pageSize,
 }) => {
   return (
-    <div className="bg-anastasia-1 h-screen p-5 flex flex-col justify-center items-center gap-5">
+    <div className="bg-anastasia-1 lg:p-5 p-2 flex flex-col justify-center items-center gap-5 lg:h-screen w-screen">
       <div className="flex justify-center items-start gap-20 w-full">
         <Image src="/Logo-crop.png" alt="Logo" width={150} height={150} />
         <Navbar />
       </div>
-      <div className="w-full flex justify-start items-start gap-5">
+      <div className="w-full lg:flex-row flex-col flex justify-start items-start gap-5">
         <Storybar
           user={user}
           users={users}
@@ -130,6 +157,10 @@ const HomePage = ({
           totalItems={totalPosts}
           totalPages={totalPostPages}
           currentPage={currentPostPage}
+          myPosts={myPosts}
+          totalMyPosts={totalMyPosts}
+          totalMyPostsPages={totalMyPostsPages}
+          currentMyPostsPage={currentMyPostsPage}
           pageSize={pageSize}
         />
         <MiniProfile user={user} />
