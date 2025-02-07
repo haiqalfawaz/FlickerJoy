@@ -3,19 +3,78 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { getCookie } from "cookies-next";
 import { useRouter } from "next/router";
-import Link from "next/link";
 
 // Import Icons
-import { GoHeart } from "react-icons/go";
-import { FaRegCommentAlt } from "react-icons/fa";
+import { GoHeart, GoHeartFill } from "react-icons/go";
 
-const Postbar = ({ posts, totalItems, totalPages, currentPage, pageSize }) => {
+const Postbar = ({
+  posts,
+  totalItems,
+  totalPages,
+  currentPage,
+  pageSize,
+  myPosts,
+  totalMyPosts,
+  totalMyPostsPages,
+  currentMyPostsPage,
+}) => {
   const [currentPosts, setCurrentPosts] = useState(posts || []);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(currentPage || 1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const containerRef = useRef(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const combinedPosts = [...posts, ...myPosts];
+    setCurrentPosts(combinedPosts);
+  }, [posts, myPosts]);
+
+  const handlelikeUnlike = async (postId, isLike) => {
+    const token = getCookie("token");
+    const apiURL = process.env.NEXT_PUBLIC_API_URL;
+    const apiKEY = process.env.NEXT_PUBLIC_API_KEY;
+
+    if (isLike === true) {
+      await axios.post(
+        `${apiURL}/unlike`,
+        {
+          postId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            apiKey: apiKEY ?? "",
+          },
+        }
+      );
+    } else {
+      await axios.post(
+        `${apiURL}/like`,
+        {
+          postId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            apiKey: apiKEY ?? "",
+          },
+        }
+      );
+    }
+
+    setCurrentPosts((prevPosts) =>
+      prevPosts.map((post) =>
+        post.id === postId
+          ? {
+              ...post,
+              isLike: !isLike,
+              totalLikes: isLike ? post.totalLikes - 1 : post.totalLikes + 1,
+            }
+          : post
+      )
+    );
+  };
 
   const loadMorePosts = async () => {
     if (loading || !hasMore) return;
@@ -37,9 +96,12 @@ const Postbar = ({ posts, totalItems, totalPages, currentPage, pageSize }) => {
       );
 
       const newPosts = res.data.data.posts;
+      const newMyPosts = myPosts || [];
+
+      const combinedPosts = [...currentPosts, ...newPosts, ...newMyPosts];
 
       if (newPosts && newPosts.length > 0) {
-        setCurrentPosts((prevPosts) => [...prevPosts, ...newPosts]);
+        setCurrentPosts(combinedPosts);
         setPage((prevPage) => prevPage + 1);
       }
 
@@ -51,10 +113,6 @@ const Postbar = ({ posts, totalItems, totalPages, currentPage, pageSize }) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleClickPost = (postId) => {
-    router.push(`/post/${postId}`);
   };
 
   const handleScroll = () => {
@@ -82,9 +140,17 @@ const Postbar = ({ posts, totalItems, totalPages, currentPage, pageSize }) => {
     };
   }, [page, hasMore, loading]);
 
+  const handleClickPost = (postId) => {
+    router.push(`/post/${postId}`);
+  };
+
+  const handleClickUser = (userId) => {
+    router.push(`/users/${userId}`);
+  };
+
   return (
     <div
-      className="h-[80vh] overflow-auto border-4 rounded-2xl border-dashed border-black px-2 py-2 w-[800px]"
+      className="lg:h-[80vh] overflow-auto lg:border-4 rounded-2xl lg:border-dashed lg:border-black lg:px-2 lg:py-2 lg:w-[800px] w-full"
       ref={containerRef}
     >
       {currentPosts.length === 0 ? (
@@ -95,47 +161,48 @@ const Postbar = ({ posts, totalItems, totalPages, currentPage, pageSize }) => {
         currentPosts.map((post) => (
           <div
             key={post.id}
-            onClick={() => handleClickPost(post.id)}
-            className="flex justify-center items-start h-full gap-7 mb-2"
+            className="flex flex-col justify-center items-center gap-10  w-full h-full"
           >
-            <div className="flex flex-col justify-center items-center gap-10">
+            <div className="lg:w-full sm:w-96 sm:h-96">
               <Image
-                src={post.imageUrl || "/user.png"}
+                src={post.imageUrl || "/noImage.png"}
                 alt="Post"
-                width={400}
-                height={400}
-                className="border-2 rounded-xl border-black"
+                width={900}
+                height={900}
+                className="border-2 rounded-xl border-black object-contain max-w-full max-h-full"
+                onClick={() => handleClickPost(post.id)}
               />
-              <div className="flex justify-center items-center gap-10">
-                <button className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-2xl text-black">
-                  <GoHeart /> {/* button like */}
-                </button>
-                <button className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-2xl text-black">
-                  <FaRegCommentAlt />
-                </button>
+            </div>
+            <div className="flex justify-center items-center gap-5">
+              <button
+                className="bg-anastasia-2 rounded-lg active:shadow-none active:translate-x-[3px] active:translate-y-[3px] shadow-[5px_5px_0px_black] border border-black p-2 text-2xl text-black flex justify-center items-center gap-2 transition-all duration-200"
+                onClick={() => handlelikeUnlike(post.id, post.isLike)}
+              >
+                {post.isLike ? (
+                  <GoHeartFill className="text-4xl" />
+                ) : (
+                  <GoHeart className="text-4xl" />
+                )}
+                {post.totalLikes}
+              </button>
+              <div className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-2xl text-black">
+                <h3>{new Date(post.createdAt).toLocaleDateString("id-ID")}</h3>
+              </div>
+              <div
+                className="flex justify-center items-center bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-xl text-black cursor-pointer"
+                onClick={() => handleClickUser(post.user.id)}
+              >
+                <Image
+                  src={post.user.profiePictureUrl || "/user.png"}
+                  width={30}
+                  height={30}
+                  className="max-w-full max-h-full object-contain"
+                />
+                <h3>{post.user.username}</h3>
               </div>
             </div>
-            <div className="flex flex-col justify-center items-center gap-4">
-              <div className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-2xl text-black w-full text-center">
-                <p>{new Date(post.createdAt).toLocaleDateString("id-ID")}</p>{" "}
-                {/* created at */}
-              </div>
-              <Link href={`/users/${post.user.id}`}>
-                <div className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-2xl text-black flex justify-center items-center gap-2 w-full">
-                  <Image
-                    src={"/user.png"}
-                    alt="user"
-                    width={50}
-                    height={50}
-                    className="border-2 rounded-xl border-black"
-                  />
-                  <p>@{post.user.username}</p> {/* username */}
-                </div>
-              </Link>
-
-              <div className="bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-xl text-black h-96 w-72 flex justify-center items-center text-center">
-                {post.caption} {/* caption */}
-              </div>
+            <div className="flex justify-center items-center bg-anastasia-2 rounded-lg [box-shadow:5px_5px_black] border border-black p-2 text-xl text-black cursor-pointer w-full">
+              <h3>{post.caption}</h3>
             </div>
           </div>
         ))
