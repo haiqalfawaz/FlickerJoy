@@ -86,7 +86,11 @@ const StoryDetailsPage = ({ StoryDetails, StoryViews, loggedUserId }) => {
   };
 
   const handleClickViewers = (userId) => {
-    router.push(`/users/${userId}`);
+    if (userId === loggedUserId.id) {
+      router.push("/profile");
+    } else {
+      router.push(`/users/${userId}`);
+    }
   };
   return (
     <div className="bg-anastasia-1 h-screen p-5 flex flex-col justify-center items-center gap-5">
@@ -102,7 +106,10 @@ const StoryDetailsPage = ({ StoryDetails, StoryViews, loggedUserId }) => {
             </h1>
           </div>
           <div className="flex flex-col justify-center items-center bg-anastasia-2 p-2 gap-4 h-full rounded-xl border-2 border-black">
-            <div className="p-2 bg-anastasia-1 rounded-2xl flex justify-center items-center gap-2  transition-all shadow-[5px_5px_0px_black] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] cursor-pointer">
+            <div
+              className="p-2 bg-anastasia-1 rounded-2xl flex justify-center items-center gap-2  transition-all shadow-[5px_5px_0px_black] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] cursor-pointer"
+              onClick={() => handleClickViewers(currentStoryDetails.user.id)}
+            >
               <Image
                 src={currentStoryDetails.user.profilePictureUrl}
                 width={50}
@@ -120,7 +127,7 @@ const StoryDetailsPage = ({ StoryDetails, StoryViews, loggedUserId }) => {
               height={600}
               className="rounded-2xl object-cover w-96 h-96"
             />
-            <div className="flex justify-center items-center">
+            <div className="flex justify-center items-center gap-4">
               {isUserStory && (
                 <button
                   className="text-black text-2xl"
@@ -129,8 +136,9 @@ const StoryDetailsPage = ({ StoryDetails, StoryViews, loggedUserId }) => {
                   <MdDeleteForever />
                 </button>
               )}
-              <p>{currentStoryDetails.caption}</p>
-              <p>Viewer</p>
+              <p className="p-1 bg-anastasia-1 shadow-[3px_3px_0_black] text-black rounded-lg w-52 text-center  ">
+                {currentStoryDetails.caption}
+              </p>
             </div>
           </div>
         </div>

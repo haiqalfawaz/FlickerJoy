@@ -49,6 +49,7 @@ export async function getServerSideProps(context) {
       const filteredStories = StoryRes.data.data.stories.filter(
         (story) => story.userId === userId
       );
+
       stories = filteredStories;
       totalPages = StoryRes.data.data.totalPages;
     }
