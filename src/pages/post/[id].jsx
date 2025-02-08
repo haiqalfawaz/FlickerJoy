@@ -219,7 +219,7 @@ const PostDetailsPage = ({ postDetails, userId }) => {
                     </Link>
                     <p className="text-base">{comment.comment}</p>
                     {comment.user.id === userId && (
-                      <div className="flex justify-center items-center gap-2 py-1 px-2 bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black] active:[box-shadow:0px_0px_black]">
+                      <div className="flex justify-center items-center gap-2 py-1 px-2 ml-auto bg-anastasia-2 rounded-lg border border-black [box-shadow:5px_5px_black] active:[box-shadow:0px_0px_black]">
                         <button
                           className="text-lg text-black"
                           onClick={() => handleDeleteComment(comment.id)}
