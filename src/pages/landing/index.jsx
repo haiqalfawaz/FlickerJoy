@@ -106,7 +106,7 @@ const LandingPage = () => {
       </section>
       <footer className="w-full h-40 bg-anastasia-5 p-4">
         <div className="flex justify-between items-center">
-          <Image src="/logo-crop.png" width={200} height={200} alt="Logo" />
+          <Image src="/Logo-crop.png" width={200} height={200} alt="Logo" />
           <h2></h2>
         </div>
       </footer>
