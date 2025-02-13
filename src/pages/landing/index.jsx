@@ -10,7 +10,7 @@ import { BsGlobeCentralSouthAsia } from "react-icons/bs";
 const LandingPage = () => {
   return (
     <>
-      <section className="relative md:bg-[url('/Background.jpg')] bg-[url('/Background-2.jpg')] bg-cover bg-center h-screen">
+      <section className="relative md:bg-[url('/Background.png')] bg-[url('/Background-2.png')] bg-cover bg-center h-screen">
         <div className="absolute inset-0 bg-black opacity-60"></div>
         <div className="relative z-10 p-8 h-full flex justify-center items-center">
           <div className="md:w-[1000px]  bg-anastasia-1 h-fit px-2 py-4 opacity-85 rounded-lg flex flex-col justify-center items-center gap-5">
@@ -106,7 +106,7 @@ const LandingPage = () => {
       </section>
       <footer className="w-full h-40 bg-anastasia-5 p-4">
         <div className="flex justify-between items-center">
-          <Image src="/logo-crop.png" width={200} height={200} />
+          <Image src="/logo-crop.png" width={200} height={200} alt="Logo" />
           <h2></h2>
         </div>
       </footer>
